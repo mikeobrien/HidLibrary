@@ -13,7 +13,7 @@ task :init do
 	
 	FileUtils.mkdir_p "lib"
 	
-	Dir["../src/IO.Usb.Hid/bin/release/*"].each do | file |
+	Dir["HidLibrary/*"].each do | file |
 		FileUtils.copy(file, "lib");
 	end
 
@@ -21,7 +21,7 @@ task :init do
 		spec.platform = Gem::Platform::RUBY
 		spec.summary = "Usb Hid .NET Component"
 		spec.name = "hidlib"
-		spec.version = "2.0.0.0"
+		spec.version = "1.0.0.0"
 		spec.files = Dir["lib/**/*"]
 		spec.authors = ["Mike O'Brien"]
 		spec.homepage = "http://github.com/mikeobrien/HidLibrary"
