@@ -80,15 +80,32 @@
             x.Flags <- 0
             x.Reserved <- IntPtr.Zero
     
-    [<Struct; StructLayout(LayoutKind.Sequential, CharSet=CharSet.Ansi)>]
+    [<Struct; StructLayout(LayoutKind.Sequential, CharSet=CharSet.Auto)>]
     type SP_DEVICE_INTERFACE_DETAIL_DATA = 
         val mutable Size:int
         [<MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)>]
         val mutable DevicePath:string
         member x.Init () =  
-            match IntPtr.Size with
+            match Process.Current.Is64Bit with
             | 4 -> x.Size <- 5
             | 8 -> x.Size <- 8
+
+        public static bool Is64Bit(this Process process)
+        {
+            if (IntPtr.Size == 8) return true;
+            if ((Environment.OSVersion.Version.Major == 5 && 
+                 Environment.OSVersion.Version.Minor >= 1) ||
+                 Environment.OSVersion.Version.Major >= 6)
+            {
+                bool result;
+                return NativeMethods.IsWow64Process(process.Handle, out result) && result;
+            }
+            return false;
+        }
+		
+		[DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsWow64Process( [In] IntPtr hProcess, [Out] out bool wow64Process );
 
     type DeviceInfoSetSafeHandle() = 
         inherit SafeHandleMinusOneIsInvalid(true)

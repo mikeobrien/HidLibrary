@@ -7,10 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeywell4600Series", "Devi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagtekMiniSwipeReader", "Devices\MagtekMiniSwipeReader\MagtekMiniSwipeReader.csproj", "{34F35E3D-4177-4427-86A6-D9D07F90F5BE}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "TestHarnessFSharp", "TestHarnessFSharp\TestHarnessFSharp.fsproj", "{0CC4863D-D958-4EB1-819D-3F6DECE5F7F2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHarnessCSharp", "TestHarnessCSharp\TestHarnessCSharp.csproj", "{913835B8-8C93-4382-973B-66E39211FD8F}"
-EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "IO.Usb.Hid", "IO.Usb.Hid\IO.Usb.Hid.fsproj", "{845DAA5D-3D88-445A-BBBE-0634024DB75B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhidgetInterfaceKit", "Devices\PhidgetInterfaceKit\PhidgetInterfaceKit.csproj", "{47584D41-02A6-4831-89CB-8FB661741836}"
@@ -47,26 +43,6 @@ Global
 		{34F35E3D-4177-4427-86A6-D9D07F90F5BE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{34F35E3D-4177-4427-86A6-D9D07F90F5BE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{34F35E3D-4177-4427-86A6-D9D07F90F5BE}.Release|x86.ActiveCfg = Release|Any CPU
-		{0CC4863D-D958-4EB1-819D-3F6DECE5F7F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0CC4863D-D958-4EB1-819D-3F6DECE5F7F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0CC4863D-D958-4EB1-819D-3F6DECE5F7F2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{0CC4863D-D958-4EB1-819D-3F6DECE5F7F2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{0CC4863D-D958-4EB1-819D-3F6DECE5F7F2}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0CC4863D-D958-4EB1-819D-3F6DECE5F7F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0CC4863D-D958-4EB1-819D-3F6DECE5F7F2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0CC4863D-D958-4EB1-819D-3F6DECE5F7F2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{0CC4863D-D958-4EB1-819D-3F6DECE5F7F2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{0CC4863D-D958-4EB1-819D-3F6DECE5F7F2}.Release|x86.ActiveCfg = Release|Any CPU
-		{913835B8-8C93-4382-973B-66E39211FD8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{913835B8-8C93-4382-973B-66E39211FD8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{913835B8-8C93-4382-973B-66E39211FD8F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{913835B8-8C93-4382-973B-66E39211FD8F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{913835B8-8C93-4382-973B-66E39211FD8F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{913835B8-8C93-4382-973B-66E39211FD8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{913835B8-8C93-4382-973B-66E39211FD8F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{913835B8-8C93-4382-973B-66E39211FD8F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{913835B8-8C93-4382-973B-66E39211FD8F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{913835B8-8C93-4382-973B-66E39211FD8F}.Release|x86.ActiveCfg = Release|Any CPU
 		{845DAA5D-3D88-445A-BBBE-0634024DB75B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{845DAA5D-3D88-445A-BBBE-0634024DB75B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{845DAA5D-3D88-445A-BBBE-0634024DB75B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

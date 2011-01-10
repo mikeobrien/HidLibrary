@@ -4,9 +4,8 @@ open System
 open System.IO
 open IO.Usb.Hid
 open IO.Usb.Hid.Native
-open NUnit.Framework
+open xunit
 
-[<TestFixture>]
 module Native = 
 
     // ---------------------------- Common ----------------------------
@@ -18,14 +17,14 @@ module Native =
 
     // ---------------------------- SetupAPI ----------------------------
 
-    [<Test>]
+    [<Fact>]
     let SetupAPIDevicePathEnumeration () = 
         let totalConnected = SetupApiAdapter.GetDevicePaths HidAdapter.HidClass true |> Seq.length
         let total = SetupApiAdapter.GetDevicePaths HidAdapter.HidClass false |> Seq.length
         Assert.Greater(total, 0)
         Assert.Greater(total, totalConnected)
 
-    [<Test>]
+    [<Fact>]
     let SetupAPIDeviceEnumeration () = 
         let totalConnected = SetupApiAdapter.GetDevices HidAdapter.HidClass true |> Seq.length
         let total = SetupApiAdapter.GetDevices HidAdapter.HidClass false |> Seq.length
@@ -34,13 +33,13 @@ module Native =
 
     // ---------------------------- Kernel32 ----------------------------
 
-    [<Test>]
+    [<Fact>]
     let CreateFileHandleTest () =
         let device = GetFirstHidDevice ()
         let handle = Kernel32Adapter.OpenFile device.Path FileAccess.Read FileShare.ReadWrite FileMode.Open false
         handle.Close()
     
-    [<Test>]
+    [<Fact>]
     let CreateDeviceStreamTest () =
         let device = GetFirstHidDevice ()
         let stream = new DeviceStream(device.Path, FileAccess.Read, FileShare.ReadWrite, FileMode.Open, false)
@@ -48,11 +47,11 @@ module Native =
 
     // ---------------------------- Hid ----------------------------
 
-    [<Test>]
+    [<Fact>]
     let HidDeviceId () = 
         Assert.AreEqual(new Guid("4d1e55b2-f16f-11cf-88cb-001111000030"), HidAdapter.HidClass)
 
-    [<Test>]
+    [<Fact>]
     let HidDeviceAttributes () = 
         let device = GetFirstHidDevice ()
         let handle = Kernel32Adapter.OpenFile device.Path FileAccess.Read FileShare.ReadWrite FileMode.Open false
