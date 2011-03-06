@@ -2,7 +2,7 @@ require "albacore"
 require "release/filesystem"
 require "release/nuget"
 
-task :default => [:unitTests]
+task :default => [:buildLibrary]
 
 desc "Inits the build"
 task :initBuild do
