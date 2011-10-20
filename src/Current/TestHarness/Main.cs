@@ -121,7 +121,9 @@ namespace TestHarness
         private void ReadHandler(HidReport report)
         {
             Output.Clear();
-            Output.AppendText(System.Text.Encoding.ASCII.GetString(report.Data));
+            Output.AppendText(String.Join(" ", report.Data.Select(d => d.ToString("X2"))));
+
+            _deviceList[Devices.SelectedIndex].ReadReport(ReadProcess);
         }
 
         private static void WriteResult(bool success)
@@ -131,7 +133,7 @@ namespace TestHarness
 
         private void RefreshDevices()
         {
-            _deviceList = HidDevices.Enumerate(0x0801, 0x0002).ToArray();
+            _deviceList = HidDevices.Enumerate().ToArray();
             //_deviceList = HidDevices.Enumerate(0x536, 0x207, 0x1c7).ToArray();
             Devices.DisplayMember = "Description";
             Devices.DataSource = _deviceList;

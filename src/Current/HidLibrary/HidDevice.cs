@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace HidLibrary
 {
@@ -304,14 +305,14 @@ namespace HidLibrary
             if (_deviceCapabilities.OutputReportByteLength <= 0) return false;
 
             var buffer = CreateOutputBuffer();
-            var bytesWritten = 0;
+            uint bytesWritten = 0;
 
             Array.Copy(data, 0, buffer, 0, Math.Min(data.Length, _deviceCapabilities.OutputReportByteLength));
 
             if (_deviceWriteMode == DeviceMode.Overlapped)
             {
                 var security = new NativeMethods.SECURITY_ATTRIBUTES();
-                var overlapped = new NativeMethods.OVERLAPPED();
+                var overlapped = new NativeOverlapped();
 
                 var overlapTimeout = timeout <= 0 ? NativeMethods.WAIT_INFINITE : timeout;
 
@@ -319,17 +320,17 @@ namespace HidLibrary
                 security.bInheritHandle = true;
                 security.nLength = Marshal.SizeOf(security);
 
-                overlapped.Offset = 0;
+                overlapped.OffsetLow = 0;
                 overlapped.OffsetHigh = 0;
-                overlapped.hEvent = NativeMethods.CreateEvent(ref security, Convert.ToInt32(false), Convert.ToInt32(true), "");
+                overlapped.EventHandle = NativeMethods.CreateEvent(ref security, Convert.ToInt32(false), Convert.ToInt32(true), "");
 
                 try
                 {
-                    NativeMethods.WriteFileOverlapped(WriteHandle, ref buffer[0], buffer.Length, ref bytesWritten, ref overlapped);
+                    NativeMethods.WriteFile(WriteHandle, buffer, (uint)buffer.Length, out bytesWritten, ref overlapped);
                 }
                 catch { return false; }
 
-                var result = NativeMethods.WaitForSingleObject(overlapped.hEvent, overlapTimeout);
+                var result = NativeMethods.WaitForSingleObject(overlapped.EventHandle, overlapTimeout);
 
                 switch (result)
                 {
@@ -345,7 +346,8 @@ namespace HidLibrary
             }
             try
             {
-                return NativeMethods.WriteFile(WriteHandle, ref buffer[0], buffer.Length, ref bytesWritten, 0);
+                var overlapped = new NativeOverlapped();
+                return NativeMethods.WriteFile(WriteHandle, buffer, (uint)buffer.Length, out bytesWritten, ref overlapped);
             }
             catch { return false; }
         }
@@ -357,29 +359,29 @@ namespace HidLibrary
 
             if (_deviceCapabilities.InputReportByteLength > 0)
             {
-                var bytesRead = 0;
+                uint bytesRead = 0;
 
                 buffer = CreateInputBuffer();
 
                 if (_deviceReadMode == DeviceMode.Overlapped)
                 {
                     var security = new NativeMethods.SECURITY_ATTRIBUTES();
-                    var overlapped = new NativeMethods.OVERLAPPED();
+                    var overlapped = new NativeOverlapped();
                     var overlapTimeout = timeout <= 0 ? NativeMethods.WAIT_INFINITE : timeout;
 
                     security.lpSecurityDescriptor = IntPtr.Zero;
                     security.bInheritHandle = true;
                     security.nLength = Marshal.SizeOf(security);
 
-                    overlapped.Offset = 0;
+                    overlapped.OffsetLow = 0;
                     overlapped.OffsetHigh = 0;
-                    overlapped.hEvent = NativeMethods.CreateEvent(ref security, Convert.ToInt32(false), Convert.ToInt32(true), string.Empty);
+                    overlapped.EventHandle = NativeMethods.CreateEvent(ref security, Convert.ToInt32(false), Convert.ToInt32(true), string.Empty);
 
                     try
                     {
-                        NativeMethods.ReadFileOverlapped(ReadHandle, ref buffer[0], buffer.Length, ref bytesRead, ref overlapped);
+                        NativeMethods.ReadFile(ReadHandle, buffer, (uint)buffer.Length, out bytesRead, ref overlapped);
 
-                        var result = NativeMethods.WaitForSingleObject(overlapped.hEvent, overlapTimeout);
+                        var result = NativeMethods.WaitForSingleObject(overlapped.EventHandle, overlapTimeout);
 
                         switch (result)
                         {
@@ -404,7 +406,9 @@ namespace HidLibrary
                 {
                     try
                     {
-                        NativeMethods.ReadFile(ReadHandle, ref buffer[0], buffer.Length, ref bytesRead, IntPtr.Zero);
+                        var overlapped = new NativeOverlapped();
+                        
+                        NativeMethods.ReadFile(ReadHandle, buffer, (uint)buffer.Length, out bytesRead, ref overlapped);
                         status = HidDeviceData.ReadStatus.Success;
                     }
                     catch { status = HidDeviceData.ReadStatus.ReadError; }
