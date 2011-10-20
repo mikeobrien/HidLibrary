@@ -43,25 +43,19 @@ namespace HidLibrary
 	    static internal extern bool CloseHandle(IntPtr hObject);
 
 	    [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-	    static internal extern int CreateEvent(ref SECURITY_ATTRIBUTES securityAttributes, int bManualReset, int bInitialState, string lpName);
+	    static internal extern IntPtr CreateEvent(ref SECURITY_ATTRIBUTES securityAttributes, int bManualReset, int bInitialState, string lpName);
 
 	    [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 	    static internal extern IntPtr CreateFile(string lpFileName, uint dwDesiredAccess, int dwShareMode, ref SECURITY_ATTRIBUTES lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, int hTemplateFile);
 
-	    [DllImport("kernel32.dll", SetLastError = true)]
-	    static internal extern bool ReadFile(IntPtr hFile, ref byte lpBuffer, int nNumberOfBytesToRead, ref int lpNumberOfBytesRead, IntPtr lpOverlapped);
-
-	    [DllImport("kernel32.dll", SetLastError = true, EntryPoint = "ReadFile")]
-	    static internal extern bool ReadFileOverlapped(IntPtr hFile, ref byte lpBuffer, int nNumberOfBytesToRead, ref int lpNumberOfBytesRead, ref OVERLAPPED lpOverlapped);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static internal extern bool ReadFile(IntPtr hFile, [Out] byte[] lpBuffer, uint nNumberOfBytesToRead, out uint lpNumberOfBytesRead, [In] ref System.Threading.NativeOverlapped lpOverlapped);
 
 	    [DllImport("kernel32.dll")]
-	    static internal extern uint WaitForSingleObject(int hHandle, int dwMilliseconds);
+	    static internal extern uint WaitForSingleObject(IntPtr hHandle, int dwMilliseconds);
 
-	    [DllImport("kernel32.dll", SetLastError = true)]
-	    static internal extern bool WriteFileOverlapped(IntPtr hFile, ref byte lpBuffer, int nNumberOfBytesToWrite, ref int lpNumberOfBytesWritten, ref OVERLAPPED lpOverlapped);
-
-	    [DllImport("kernel32.dll", SetLastError = true)]
-	    static internal extern bool WriteFile(IntPtr hFile, ref byte lpBuffer, int nNumberOfBytesToWrite, ref int lpNumberOfBytesWritten, int lpOverlapped);
+        [DllImport("kernel32.dll")]
+        static internal extern bool WriteFile(IntPtr hFile, byte[] lpBuffer, uint nNumberOfBytesToWrite, out uint lpNumberOfBytesWritten, [In] ref System.Threading.NativeOverlapped lpOverlapped);
 
 	    internal const int DBT_DEVICEARRIVAL = 0x8000;
 	    internal const int DBT_DEVICEREMOVECOMPLETE = 0x8004;
