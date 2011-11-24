@@ -2,21 +2,22 @@ require "albacore"
 require "release/filesystem"
 require "release/nuget"
 
-task :default => [:buildLibrary]
+reportsPath = "reports"
+version = ENV["BUILD_NUMBER"]
 
 desc "Inits the build"
 task :initBuild do
-	FileSystem.EnsurePath("reports")
+	FileSystem.EnsurePath(reportsPath)
 end
 
 desc "Generate assembly info."
 assemblyinfo :assemblyInfo => :initBuild do |asm|
-    asm.version = ENV["GO_PIPELINE_LABEL"] + ".0"
+    asm.version = version
     asm.company_name = "Ultraviolet Catastrophe"
     asm.product_name = "Hid Library"
     asm.title = "Hid Library"
     asm.description = "Hid communication library."
-    asm.copyright = "Copyright (c) 2010 Ultraviolet Catastrophe"
+    asm.copyright = "Copyright (c) 2011 Ultraviolet Catastrophe"
     asm.output_file = "src/Current/HidLibrary/Properties/AssemblyInfo.cs"
 end
 
@@ -38,47 +39,53 @@ end
 #nunit :unitTests => :buildTestProject do |nunit|
 #	nunit.command = "src/packages/NUnit.2.5.9.10348/Tools/nunit-console.exe"
 #	nunit.assemblies "src/Tests/bin/Release/Tests.dll"
-#	nunit.options "/xml=reports/TestResult.xml"
+#	nunit.options "/xml=#{reportsPath}/TestResult.xml"
 #end
+
+nugetApiKey = ENV["NUGET_API_KEY"]
+deployPath = "deploy"
+
+packagePath = File.join(deployPath, "package")
+nuspec = "hidlibrary.nuspec"
+packageLibPath = File.join(packagePath, "lib")
+binPath = "src/HidLibrary/bin/Release"
 
 desc "Prep the package folder"
 task :prepPackage => :buildLibrary do
-	FileSystem.DeleteDirectory("deploy")
-	FileSystem.EnsurePath("deploy/package/lib")
-	FileSystem.CopyFiles("src/Current/HidLibrary/bin/Release/HidLibrary.dll", "deploy/package/lib")
-	FileSystem.CopyFiles("src/Current/HidLibrary/bin/Release/HidLibrary.pdb", "deploy/package/lib")
+	FileSystem.DeleteDirectory(deployPath)
+	
+	FileSystem.EnsurePath(packageLibPath)
+	FileSystem.CopyFiles(File.join(binPath, "HidLibrary.dll"), packageLibPath)
+	FileSystem.CopyFiles(File.join(binPath, "HidLibrary.pdb"), packageLibPath)
 end
 
 desc "Create the nuspec"
 nuspec :createSpec => :prepPackage do |nuspec|
    nuspec.id = "hidlibrary"
-   nuspec.version = ENV["GO_PIPELINE_LABEL"]
+   nuspec.version = version
    nuspec.authors = "Mike O'Brien"
    nuspec.owners = "Mike O'Brien"
+   nuspec.title = "Hid Library"
    nuspec.description = "This library enables you to enumerate and communicate with Hid compatible USB devices in .NET."
    nuspec.summary = "This library enables you to enumerate and communicate with Hid compatible USB devices in .NET."
    nuspec.language = "en-US"
    nuspec.licenseUrl = "https://github.com/mikeobrien/HidLibrary/blob/master/LICENSE"
    nuspec.projectUrl = "https://github.com/mikeobrien/HidLibrary"
-   nuspec.working_directory = "deploy/package"
-   nuspec.output_file = "hidlibrary.nuspec"
+   nuspec.iconUrl = "https://github.com/mikeobrien/HidLibrary/raw/master/misc/hidlibrary.png"
+   nuspec.working_directory = packagePath
+   nuspec.output_file = nuspec
    nuspec.tags = "usb hid"
 end
 
 desc "Create the nuget package"
 nugetpack :createPackage => :createSpec do |nugetpack|
-   nugetpack.nuspec = "deploy/package/hidlibrary.nuspec"
-   nugetpack.base_folder = "deploy/package"
-   nugetpack.output = "deploy"
+   nugetpack.nuspec = File.join(packagePath, nuspec)
+   nugetpack.base_folder = packagePath
+   nugetpack.output = deployPath
 end
 
 desc "Push the nuget package"
-nugetpush :pushPackage => :createPackage do |nugetpush|
-   nugetpush.package = "deploy/hidlibrary.#{ENV['GO_PIPELINE_LABEL']}.nupkg"
-end
-
-desc "Tag the current release"
-task :tagRelease do
-	result = system("git", "tag", "-a", "v#{ENV['GO_PIPELINE_LABEL']}", "-m", "release-v#{ENV['GO_PIPELINE_LABEL']}")
-	result = system("git", "push", "--tags")
+nugetpush :pushPackage => :createPackage do |nuget|
+	nuget.apikey = nugetApiKey
+	nuget.package = File.join(deployPath, "hidlibrary.#{version}.nupkg")
 end
