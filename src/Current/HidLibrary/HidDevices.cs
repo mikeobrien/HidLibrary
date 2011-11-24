@@ -66,10 +66,14 @@ namespace HidLibrary
                         var devicePath = GetDevicePath(deviceInfoSet, deviceInterfaceData);
                         if (devices.Any(x => x == devicePath)) continue;
                         devices.Add(devicePath);
-                        yield return devicePath;
                     }
                 }
                 NativeMethods.SetupDiDestroyDeviceInfoList(deviceInfoSet);
+
+                foreach (string devicePath in devices)
+                {
+                    yield return devicePath;
+                }
             }
         }
 
