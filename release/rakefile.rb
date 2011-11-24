@@ -1,6 +1,5 @@
 require "albacore"
 require "release/filesystem"
-require "release/nuget"
 
 reportsPath = "reports"
 version = ENV["BUILD_NUMBER"]
