@@ -17,14 +17,14 @@ assemblyinfo :assemblyInfo => :initBuild do |asm|
     asm.title = "Hid Library"
     asm.description = "Hid communication library."
     asm.copyright = "Copyright (c) 2011 Ultraviolet Catastrophe"
-    asm.output_file = "src/Current/HidLibrary/Properties/AssemblyInfo.cs"
+    asm.output_file = "src/HidLibrary/Properties/AssemblyInfo.cs"
 end
 
 desc "Builds the library."
 msbuild :buildLibrary => :assemblyInfo do |msb|
     msb.properties :configuration => :Release
     msb.targets :Clean, :Build
-    msb.solution = "src/Current/HidLibrary/HidLibrary.csproj"
+    msb.solution = "src/HidLibrary/HidLibrary.csproj"
 end
 
 #desc "Builds the test project."
