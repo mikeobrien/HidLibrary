@@ -45,7 +45,7 @@ nugetApiKey = ENV["NUGET_API_KEY"]
 deployPath = "deploy"
 
 packagePath = File.join(deployPath, "package")
-nuspec = "hidlibrary.nuspec"
+nuspecName = "hidlibrary.nuspec"
 packageLibPath = File.join(packagePath, "lib")
 binPath = "src/HidLibrary/bin/Release"
 
@@ -72,13 +72,13 @@ nuspec :createSpec => :prepPackage do |nuspec|
    nuspec.projectUrl = "https://github.com/mikeobrien/HidLibrary"
    nuspec.iconUrl = "https://github.com/mikeobrien/HidLibrary/raw/master/misc/hidlibrary.png"
    nuspec.working_directory = packagePath
-   nuspec.output_file = nuspec
+   nuspec.output_file = nuspecName
    nuspec.tags = "usb hid"
 end
 
 desc "Create the nuget package"
 nugetpack :createPackage => :createSpec do |nugetpack|
-   nugetpack.nuspec = File.join(packagePath, nuspec)
+   nugetpack.nuspec = File.join(packagePath, nuspecName)
    nugetpack.base_folder = packagePath
    nugetpack.output = deployPath
 end
