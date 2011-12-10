@@ -1,15 +1,14 @@
 require "albacore"
-require "release/filesystem"
+require_relative "filesystem"
+require_relative "gallio-task"
 
 reportsPath = "reports"
 version = ENV["BUILD_NUMBER"]
 
-desc "Inits the build"
 task :initBuild do
 	FileSystem.EnsurePath(reportsPath)
 end
 
-desc "Generate assembly info."
 assemblyinfo :assemblyInfo => :initBuild do |asm|
     asm.version = version
     asm.company_name = "Ultraviolet Catastrophe"
@@ -20,26 +19,26 @@ assemblyinfo :assemblyInfo => :initBuild do |asm|
     asm.output_file = "src/HidLibrary/Properties/AssemblyInfo.cs"
 end
 
-desc "Builds the library."
 msbuild :buildLibrary => :assemblyInfo do |msb|
     msb.properties :configuration => :Release
     msb.targets :Clean, :Build
     msb.solution = "src/HidLibrary/HidLibrary.csproj"
 end
 
-#desc "Builds the test project."
-#msbuild :buildTestProject => :buildLibrary do |msb|
-#    msb.properties :configuration => :Release
-#    msb.targets :Clean, :Build
-#    msb.solution = "src/Tests/Tests.csproj"
-#end
+msbuild :buildTestProject => :buildLibrary do |msb|
+    msb.properties :configuration => :Release
+    msb.targets :Clean, :Build
+    msb.solution = "src/Tests/Tests.csproj"
+end
 
-#desc "NUnit Test Runner"
-#nunit :unitTests => :buildTestProject do |nunit|
-#	nunit.command = "src/packages/NUnit.2.5.9.10348/Tools/nunit-console.exe"
-#	nunit.assemblies "src/Tests/bin/Release/Tests.dll"
-#	nunit.options "/xml=#{reportsPath}/TestResult.xml"
-#end
+gallio :unitTests => :buildTestProject do |runner|
+	runner.echo_command_line = true
+	runner.add_test_assembly("src/Tests/bin/Release/Tests.dll")
+	runner.verbosity = 'Normal'
+	runner.report_directory = reportsPath
+	runner.report_name_format = 'tests'
+	runner.add_report_type('Html')
+end
 
 nugetApiKey = ENV["NUGET_API_KEY"]
 deployPath = "deploy"
@@ -49,8 +48,7 @@ nuspecName = "hidlibrary.nuspec"
 packageLibPath = File.join(packagePath, "lib")
 binPath = "src/HidLibrary/bin/Release"
 
-desc "Prep the package folder"
-task :prepPackage => :buildLibrary do
+task :prepPackage => :unitTests do
 	FileSystem.DeleteDirectory(deployPath)
 	
 	FileSystem.EnsurePath(packageLibPath)
@@ -58,7 +56,6 @@ task :prepPackage => :buildLibrary do
 	FileSystem.CopyFiles(File.join(binPath, "HidLibrary.pdb"), packageLibPath)
 end
 
-desc "Create the nuspec"
 nuspec :createSpec => :prepPackage do |nuspec|
    nuspec.id = "hidlibrary"
    nuspec.version = version
@@ -76,14 +73,12 @@ nuspec :createSpec => :prepPackage do |nuspec|
    nuspec.tags = "usb hid"
 end
 
-desc "Create the nuget package"
 nugetpack :createPackage => :createSpec do |nugetpack|
    nugetpack.nuspec = File.join(packagePath, nuspecName)
    nugetpack.base_folder = packagePath
    nugetpack.output = deployPath
 end
 
-desc "Push the nuget package"
 nugetpush :pushPackage => :createPackage do |nuget|
 	nuget.apikey = nugetApiKey
 	nuget.package = File.join(deployPath, "hidlibrary.#{version}.nupkg")
