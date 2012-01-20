@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Ultraviolet Catastrophe")]
 [assembly: AssemblyProduct("HidLibrary")]
-[assembly: AssemblyCopyright("Copyright © 2011 Ultraviolet Catatrophe")]
+[assembly: AssemblyCopyright("Copyright © 2011 Ultraviolet Catastrophe")]
 [assembly: AssemblyTrademark("HidLibrary")]
 [assembly: AssemblyCulture("")]
 

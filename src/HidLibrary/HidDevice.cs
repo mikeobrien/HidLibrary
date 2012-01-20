@@ -344,12 +344,15 @@ namespace HidLibrary
                         return false;
                 }
             }
-            try
+            else
             {
-                var overlapped = new NativeOverlapped();
-                return NativeMethods.WriteFile(WriteHandle, buffer, (uint)buffer.Length, out bytesWritten, ref overlapped);
+                try
+                {
+                    var overlapped = new NativeOverlapped();
+                    return NativeMethods.WriteFile(WriteHandle, buffer, (uint)buffer.Length, out bytesWritten, ref overlapped);
+                }
+                catch { return false; }
             }
-            catch { return false; }
         }
 
         private HidDeviceData ReadData(int timeout)
