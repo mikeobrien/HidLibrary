@@ -26,7 +26,7 @@ namespace HidLibrary
         private DeviceMode _deviceWriteMode = DeviceMode.NonOverlapped;
 
         private readonly HidDeviceEventMonitor _deviceEventMonitor;
-
+        
         private bool _monitorDeviceEvents;
         private delegate HidDeviceData ReadDelegate();
         private delegate HidReport ReadReportDelegate();
@@ -222,6 +222,36 @@ namespace HidLibrary
             return new HidReport(Capabilities.OutputReportByteLength);
         }
 
+        public bool WriteFeatureData(byte[] data)
+        {
+            if (_deviceCapabilities.FeatureReportByteLength <= 0) return false;
+
+            var buffer = CreateFeatureOutputBuffer();
+
+            Array.Copy(data, 0, buffer, 0, Math.Min(data.Length, _deviceCapabilities.FeatureReportByteLength));
+
+
+            IntPtr hidHandle = IntPtr.Zero;
+            bool success = false;
+            try
+            {
+                hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+
+                var overlapped = new NativeOverlapped();
+                success = NativeMethods.HidD_SetFeature(hidHandle, buffer, buffer.Length);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(string.Format("Error accessing HID device '{0}'.", _devicePath), exception);
+            }
+            finally
+            {
+                if (hidHandle != IntPtr.Zero)
+                    CloseDeviceIO(hidHandle);
+            }
+            return success;
+        }
+
         private static void EndRead(IAsyncResult ar)
         {
             var hidAsyncState = (HidAsyncState)ar.AsyncState;
@@ -270,6 +300,11 @@ namespace HidLibrary
         private byte[] CreateOutputBuffer()
         {
             return CreateBuffer(Capabilities.OutputReportByteLength - 1);
+        }
+
+        private byte[] CreateFeatureOutputBuffer()
+        {
+            return CreateBuffer(Capabilities.FeatureReportByteLength - 1);
         }
 
         private static byte[] CreateBuffer(int length)

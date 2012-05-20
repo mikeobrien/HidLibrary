@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GriffinPowerMateConsole", "GriffinPowerMateConsole\GriffinPowerMateConsole.csproj", "{AF254A98-A51D-4529-B5D5-DEA66EA76047}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GriffinPowerMateWindowsForms", "GriffinPowerMateWindowsForms\GriffinPowerMateWindowsForms.csproj", "{ABEBCF51-01B9-4666-9510-011908636639}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerMate", "PowerMate\PowerMate.csproj", "{390FBC50-C9B0-4757-90C0-84EBC2B7C52B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF254A98-A51D-4529-B5D5-DEA66EA76047}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{AF254A98-A51D-4529-B5D5-DEA66EA76047}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{AF254A98-A51D-4529-B5D5-DEA66EA76047}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{AF254A98-A51D-4529-B5D5-DEA66EA76047}.Debug|x86.ActiveCfg = Debug|x86
+		{AF254A98-A51D-4529-B5D5-DEA66EA76047}.Debug|x86.Build.0 = Debug|x86
+		{AF254A98-A51D-4529-B5D5-DEA66EA76047}.Release|Any CPU.ActiveCfg = Release|x86
+		{AF254A98-A51D-4529-B5D5-DEA66EA76047}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{AF254A98-A51D-4529-B5D5-DEA66EA76047}.Release|Mixed Platforms.Build.0 = Release|x86
+		{AF254A98-A51D-4529-B5D5-DEA66EA76047}.Release|x86.ActiveCfg = Release|x86
+		{AF254A98-A51D-4529-B5D5-DEA66EA76047}.Release|x86.Build.0 = Release|x86
+		{ABEBCF51-01B9-4666-9510-011908636639}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{ABEBCF51-01B9-4666-9510-011908636639}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{ABEBCF51-01B9-4666-9510-011908636639}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{ABEBCF51-01B9-4666-9510-011908636639}.Debug|x86.ActiveCfg = Debug|x86
+		{ABEBCF51-01B9-4666-9510-011908636639}.Debug|x86.Build.0 = Debug|x86
+		{ABEBCF51-01B9-4666-9510-011908636639}.Release|Any CPU.ActiveCfg = Release|x86
+		{ABEBCF51-01B9-4666-9510-011908636639}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{ABEBCF51-01B9-4666-9510-011908636639}.Release|Mixed Platforms.Build.0 = Release|x86
+		{ABEBCF51-01B9-4666-9510-011908636639}.Release|x86.ActiveCfg = Release|x86
+		{ABEBCF51-01B9-4666-9510-011908636639}.Release|x86.Build.0 = Release|x86
+		{390FBC50-C9B0-4757-90C0-84EBC2B7C52B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{390FBC50-C9B0-4757-90C0-84EBC2B7C52B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{390FBC50-C9B0-4757-90C0-84EBC2B7C52B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{390FBC50-C9B0-4757-90C0-84EBC2B7C52B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{390FBC50-C9B0-4757-90C0-84EBC2B7C52B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{390FBC50-C9B0-4757-90C0-84EBC2B7C52B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{390FBC50-C9B0-4757-90C0-84EBC2B7C52B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{390FBC50-C9B0-4757-90C0-84EBC2B7C52B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{390FBC50-C9B0-4757-90C0-84EBC2B7C52B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{390FBC50-C9B0-4757-90C0-84EBC2B7C52B}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
