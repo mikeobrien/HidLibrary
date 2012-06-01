@@ -439,6 +439,7 @@ namespace HidLibrary
                         }
                     }
                     catch { status = HidDeviceData.ReadStatus.ReadError; }
+                    finally { CloseDeviceIO(overlapped.EventHandle); }
                 }
                 else
                 {
