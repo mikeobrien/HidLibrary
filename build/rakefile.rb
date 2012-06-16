@@ -5,6 +5,9 @@ require_relative "gallio-task"
 reportsPath = "reports"
 version = ENV["BUILD_NUMBER"]
 
+task :build => [:createPackage]
+task :deploy => [:pushPackage]
+
 task :initBuild do
 	FileSystem.EnsurePath(reportsPath)
 end
