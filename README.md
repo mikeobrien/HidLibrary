@@ -6,7 +6,7 @@ This library enables you to enumerate and communicate with Hid compatible USB de
 Installation
 ------------
 
-    [TBD]
+    PM> Install-Package hidlibrary
 	
 Props
 ------------
