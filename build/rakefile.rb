@@ -18,7 +18,7 @@ assemblyinfo :assemblyInfo => :initBuild do |asm|
     asm.product_name = "Hid Library"
     asm.title = "Hid Library"
     asm.description = "Hid communication library."
-    asm.copyright = "Copyright (c) 2011 Ultraviolet Catastrophe"
+    asm.copyright = "Copyright (c) #{Time.now.year} Ultraviolet Catastrophe"
     asm.output_file = "src/HidLibrary/Properties/AssemblyInfo.cs"
 end
 
