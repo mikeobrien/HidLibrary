@@ -3,6 +3,8 @@ Hid Library
 
 This library enables you to enumerate and communicate with Hid compatible USB devices in .NET. It offers synchronous and asynchronous read and write functionality as well as notification of insertion and removal of a device. This library works on x86 and x64.
 
+**Note:** There has been quite a bit of interest in this little library over the years but unfortunately I'm not able to support it at this time. I'm also unable to answer questions about using it with different devices. So you're on your own if you decide to use it. Please feel free to fork it or send me a pull request if you would like to contribute.
+
 Installation
 ------------
 
