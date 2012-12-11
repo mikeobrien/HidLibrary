@@ -45,7 +45,7 @@ namespace HidLibrary
 			return EnumerateHidDevicePaths().Select(x => new HidDevice(x)).Where(x => x.Attributes.VendorId == vendorId);
 		}
 
-		private static IEnumerable<string> EnumerateHidDevicePaths()
+		public static IEnumerable<string> EnumerateHidDevicePaths()
 		{
 			var hidClass = HidClassGuid;
 			var deviceInfoSet = NativeMethods.SetupDiGetClassDevs(ref hidClass, null, 0, NativeMethods.DIGCF_PRESENT | NativeMethods.DIGCF_DEVICEINTERFACE);
