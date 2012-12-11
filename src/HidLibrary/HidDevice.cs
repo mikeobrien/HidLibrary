@@ -7,9 +7,11 @@ namespace HidLibrary
     public class HidDevice : IDisposable
     {
         public event InsertedEventHandler Inserted;
+
         public event RemovedEventHandler Removed;
 
         public delegate void InsertedEventHandler();
+
         public delegate void RemovedEventHandler();
 
         public enum DeviceMode
@@ -26,25 +28,32 @@ namespace HidLibrary
         private DeviceMode _deviceWriteMode = DeviceMode.NonOverlapped;
 
         private readonly HidDeviceEventMonitor _deviceEventMonitor;
-        
+
         private bool _monitorDeviceEvents;
+
         private delegate HidDeviceData ReadDelegate();
+
         private delegate HidReport ReadReportDelegate();
+
         private delegate bool WriteDelegate(byte[] data);
+
         private delegate bool WriteReportDelegate(HidReport report);
 
         public delegate void ReadCallback(HidDeviceData data);
+
         public delegate void ReadReportCallback(HidReport report);
 
         public delegate void WriteCallback(bool success);
 
-        internal HidDevice(string devicePath)
+        internal HidDevice(string devicePath, string description)
         {
             _deviceEventMonitor = new HidDeviceEventMonitor(this);
             _deviceEventMonitor.Inserted += DeviceEventMonitorInserted;
             _deviceEventMonitor.Removed += DeviceEventMonitorRemoved;
 
             _devicePath = devicePath;
+
+            this.Description = description;
 
             try
             {
@@ -61,13 +70,24 @@ namespace HidLibrary
             }
         }
 
+        internal HidDevice(string devicePath)
+            : this(devicePath, string.Empty)
+        { }
+
         public IntPtr ReadHandle { get; private set; }
+
         public IntPtr WriteHandle { get; private set; }
+
         public bool IsOpen { get; private set; }
+
         public bool IsConnected { get { return HidDevices.IsConnected(_devicePath); } }
-        public string Description { get { return ToString(); } }
+
+        public string Description { get; private set; }
+
         public HidDeviceCapabilities Capabilities { get { return _deviceCapabilities; } }
+
         public HidDeviceAttributes Attributes { get { return _deviceAttributes; } }
+
         public string DevicePath { get { return _devicePath; } }
 
         public bool MonitorDeviceEvents
@@ -82,7 +102,7 @@ namespace HidLibrary
 
         public override string ToString()
         {
-            return string.Format("VendorID={0}, ProductID={1}, Version={2}, DevicePath={3}", 
+            return string.Format("VendorID={0}, ProductID={1}, Version={2}, DevicePath={3}",
                                 _deviceAttributes.VendorHexId,
                                 _deviceAttributes.ProductHexId,
                                 _deviceAttributes.Version,
@@ -114,7 +134,6 @@ namespace HidLibrary
 
             IsOpen = ReadHandle.ToInt32() != NativeMethods.INVALID_HANDLE_VALUE & WriteHandle.ToInt32() != NativeMethods.INVALID_HANDLE_VALUE;
         }
-
 
         public void CloseDevice()
         {
@@ -149,7 +168,6 @@ namespace HidLibrary
                 {
                     return new HidDeviceData(HidDeviceData.ReadStatus.ReadError);
                 }
-
             }
             return new HidDeviceData(HidDeviceData.ReadStatus.NotConnected);
         }
@@ -229,7 +247,6 @@ namespace HidLibrary
             var buffer = CreateFeatureOutputBuffer();
 
             Array.Copy(data, 0, buffer, 0, Math.Min(data.Length, _deviceCapabilities.FeatureReportByteLength));
-
 
             IntPtr hidHandle = IntPtr.Zero;
             bool success = false;
@@ -424,14 +441,16 @@ namespace HidLibrary
                         switch (result)
                         {
                             case NativeMethods.WAIT_OBJECT_0: status = HidDeviceData.ReadStatus.Success; break;
-                            case NativeMethods.WAIT_TIMEOUT: 
+                            case NativeMethods.WAIT_TIMEOUT:
                                 status = HidDeviceData.ReadStatus.WaitTimedOut;
-                                buffer = new byte[] {};
+                                buffer = new byte[] { };
                                 break;
+
                             case NativeMethods.WAIT_FAILED:
                                 status = HidDeviceData.ReadStatus.WaitFail;
                                 buffer = new byte[] { };
                                 break;
+
                             default:
                                 status = HidDeviceData.ReadStatus.NoDataRead;
                                 buffer = new byte[] { };
@@ -446,7 +465,7 @@ namespace HidLibrary
                     try
                     {
                         var overlapped = new NativeOverlapped();
-                        
+
                         NativeMethods.ReadFile(ReadHandle, buffer, (uint)buffer.Length, out bytesRead, ref overlapped);
                         status = HidDeviceData.ReadStatus.Success;
                     }

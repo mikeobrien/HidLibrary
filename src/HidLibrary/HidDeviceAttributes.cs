@@ -13,9 +13,13 @@
         }
 
         public int VendorId { get; private set; }
+
         public int ProductId { get; private set; }
+
         public int Version { get; private set; }
+
         public string VendorHexId { get; set; }
+
         public string ProductHexId { get; set; }
     }
 }

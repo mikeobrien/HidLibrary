@@ -5,7 +5,7 @@ namespace HidLibrary
     public class HidReport
     {
         private byte _reportId;
-        private byte[] _data = new byte[] {};
+        private byte[] _data = new byte[] { };
 
         private readonly HidDeviceData.ReadStatus _status;
 
@@ -22,7 +22,6 @@ namespace HidLibrary
 
             if ((deviceData.Data != null))
             {
-
                 if (deviceData.Data.Length > 0)
                 {
                     _reportId = deviceData.Data[0];
@@ -41,6 +40,7 @@ namespace HidLibrary
         }
 
         public bool Exists { get; private set; }
+
         public HidDeviceData.ReadStatus ReadStatus { get { return _status; } }
 
         public byte ReportId

@@ -6,9 +6,11 @@ namespace HidLibrary
     internal class HidDeviceEventMonitor
     {
         public event InsertedEventHandler Inserted;
+
         public event RemovedEventHandler Removed;
 
         public delegate void InsertedEventHandler();
+
         public delegate void RemovedEventHandler();
 
         private readonly HidDevice _device;
