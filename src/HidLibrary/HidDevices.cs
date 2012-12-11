@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using NLog;
 
 namespace HidLibrary
 {
     public class HidDevices
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         private static Guid _hidClassGuid = Guid.Empty;
 
         public static bool IsConnected(string devicePath)
@@ -25,7 +22,6 @@ namespace HidLibrary
 
         public static IEnumerable<HidDevice> Enumerate()
         {
-            //return EnumerateHidDevicePaths().Select(x => new HidDevice(x));
             return EnumerateHidDevices();
         }
 
@@ -192,13 +188,13 @@ namespace HidLibrary
                 else
                 {
                     int error = Marshal.GetLastWin32Error();
-                    logger.Fatal("BusReported: {0}, propertyType={1}, requiredSize={2}, error={4}", reportedDeviceDescription,
-                                 propertyType, requiredSize, error);
+
+                    //Log("Error, GetLastError={0}", error);
                 }
             }
             catch (Exception e) // TODO: Catch ONLY native method not found
             {
-                logger.InfoException("Likely we're running on XP", e);
+                //Log("Likely we're running on XP", e);
             }
 
             if (reportedDeviceDescription != string.Empty)
