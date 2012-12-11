@@ -13,10 +13,10 @@
         }
 
         public HidDeviceData(ReadStatus status)
-	    {
-		    Data = new byte[] {};
-		    Status = status;
-	    }
+        {
+            Data = new byte[] { };
+            Status = status;
+        }
 
         public HidDeviceData(byte[] data, ReadStatus status)
         {
@@ -25,6 +25,7 @@
         }
 
         public byte[] Data { get; private set; }
+
         public ReadStatus Status { get; private set; }
     }
 }

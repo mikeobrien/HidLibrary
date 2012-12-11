@@ -12,6 +12,7 @@
         }
 
         public object CallerDelegate { get { return _callerDelegate; } }
+
         public object CallbackDelegate { get { return _callbackDelegate; } }
     }
 }
