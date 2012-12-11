@@ -192,7 +192,7 @@ namespace HidLibrary
                     //Log("Error, GetLastError={0}", error);
                 }
             }
-            catch (Exception e) // TODO: Catch ONLY native method not found
+            catch (MissingMethodException e)
             {
                 //Log("Likely we're running on XP", e);
             }
