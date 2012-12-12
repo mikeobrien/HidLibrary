@@ -36,6 +36,8 @@ namespace HidLibrary
 		    public bool bInheritHandle;
 	    }
 
+        
+
 	    [DllImport("kernel32.dll")]
 	    static internal extern int CancelIo(int hFile);
 
@@ -103,6 +105,12 @@ namespace HidLibrary
 
         internal const int SPDRP_UPPERFILTERS = 0x11;
 
+        internal static DEVPROPKEY DEVPKEY_Device_BusReportedDeviceDesc = new DEVPROPKEY
+            {
+                fmtid = new Guid(0x540b947e, 0x8b40, 0x45bc, 0xa8, 0xa2, 0x6a, 0x0b, 0x89, 0x4c, 0xbd, 0xa2),
+                pid = 4,
+            };
+
 	    [StructLayout(LayoutKind.Sequential)]
 	    internal class DEV_BROADCAST_DEVICEINTERFACE
 	    {
@@ -169,8 +177,19 @@ namespace HidLibrary
             internal string DevicePath;
         }
 
+        // Device Property
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct DEVPROPKEY
+        {
+            public Guid fmtid;
+            public ulong pid;
+        }
+
 	    [DllImport("setupapi.dll", EntryPoint = "SetupDiGetDeviceRegistryProperty")]
-	    public static extern bool SetupDiGetDeviceRegistryProperty(IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, int propertyVal, int propertyRegDataType, byte[] propertyBuffer, int propertyBufferSize, IntPtr requiredSize);
+	    public static extern bool SetupDiGetDeviceRegistryProperty(IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, int propertyVal, ref int propertyRegDataType, byte[] propertyBuffer, int propertyBufferSize, ref int requiredSize);
+
+        [DllImport("setupapi.dll", EntryPoint = "SetupDiGetDevicePropertyW", SetLastError = true)]
+        public static extern bool SetupDiGetDeviceProperty(IntPtr deviceInfo, ref SP_DEVINFO_DATA deviceInfoData, DEVPROPKEY propkey, ref ulong propertyDataType, byte[] propertyBuffer, int propertyBufferSize, ref int requiredSize, int zerothis);
 
 	    [DllImport("setupapi.dll")]
 	    static internal extern bool SetupDiEnumDeviceInfo(IntPtr deviceInfoSet, int memberIndex, ref SP_DEVINFO_DATA deviceInfoData);
