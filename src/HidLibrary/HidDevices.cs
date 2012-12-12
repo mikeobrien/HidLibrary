@@ -42,7 +42,7 @@ namespace HidLibrary
             return EnumerateHidDevices().Select(x => new HidDevice(x)).Where(x => x.Attributes.VendorId == vendorId);
         }
 
-        private static IEnumerable<string> EnumerateHidDevices()
+        public static IEnumerable<string> EnumerateHidDevices()
         {
             var hidClass = HidClassGuid;
             var deviceInfoSet = NativeMethods.SetupDiGetClassDevs(ref hidClass, null, 0, NativeMethods.DIGCF_PRESENT | NativeMethods.DIGCF_DEVICEINTERFACE);
@@ -61,11 +61,10 @@ namespace HidLibrary
                     deviceInterfaceData.cbSize = Marshal.SizeOf(deviceInterfaceData);
                     var deviceInterfaceIndex = 0;
 
-                    while (NativeMethods.SetupDiEnumDeviceInterfaces(deviceInfoSet, 0, ref hidClass, deviceInterfaceIndex, ref deviceInterfaceData))
+                    while (NativeMethods.SetupDiEnumDeviceInterfaces(deviceInfoSet, ref deviceInfoData, ref hidClass, deviceInterfaceIndex, ref deviceInterfaceData))
                     {
                         deviceInterfaceIndex++;
                         var devicePath = GetDevicePath(deviceInfoSet, deviceInterfaceData);
-                        if (devices.Any(x => x == devicePath)) continue;
                         devices.Add(devicePath);
                     }
                 }
@@ -78,7 +77,7 @@ namespace HidLibrary
             }
         }
 
-        private static IEnumerable<HidDevice> EnumerateHidDeviceInstances()
+        public static IEnumerable<HidDevice> EnumerateHidDeviceInstances()
         {
             var hidClass = HidClassGuid;
             var deviceInfoSet = NativeMethods.SetupDiGetClassDevs(ref hidClass, null, 0, NativeMethods.DIGCF_PRESENT | NativeMethods.DIGCF_DEVICEINTERFACE);
@@ -97,20 +96,22 @@ namespace HidLibrary
                     deviceInterfaceData.cbSize = Marshal.SizeOf(deviceInterfaceData);
                     var deviceInterfaceIndex = 0;
 
-                    while (NativeMethods.SetupDiEnumDeviceInterfaces(deviceInfoSet, 0, ref hidClass, deviceInterfaceIndex, ref deviceInterfaceData))
+                    while (NativeMethods.SetupDiEnumDeviceInterfaces(deviceInfoSet, ref deviceInfoData, ref hidClass, deviceInterfaceIndex, ref deviceInterfaceData))
                     {
                         deviceInterfaceIndex++;
                         var devicePath = GetDevicePath(deviceInfoSet, deviceInterfaceData);
 
                         var tempDevice = new HidDevice(devicePath);
                         tempDevice.Attributes.BusReportedDescription = GetDeviceBusReportedDescription(deviceInfoSet, ref deviceInfoData);
-                        if (devices.Any(x => x.DevicePath == devicePath))
-                            continue;
-
-                        yield return tempDevice;
+                        devices.Add(tempDevice);
                     }
                 }
                 NativeMethods.SetupDiDestroyDeviceInfoList(deviceInfoSet);
+
+                foreach (HidDevice device in devices)
+                {
+                    yield return device;
+                }
             }
         }
 

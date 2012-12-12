@@ -204,7 +204,7 @@ namespace HidLibrary
 	    static internal extern int SetupDiDestroyDeviceInfoList(IntPtr deviceInfoSet);
 
 	    [DllImport("setupapi.dll")]
-	    static internal extern bool SetupDiEnumDeviceInterfaces(IntPtr deviceInfoSet, int deviceInfoData, ref System.Guid interfaceClassGuid, int memberIndex, ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData);
+	    static internal extern bool SetupDiEnumDeviceInterfaces(IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, ref System.Guid interfaceClassGuid, int memberIndex, ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData);
 
 	    [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
         static internal extern IntPtr SetupDiGetClassDevs(ref System.Guid classGuid, string enumerator, int hwndParent, int flags);
