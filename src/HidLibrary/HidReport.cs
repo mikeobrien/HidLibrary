@@ -11,7 +11,7 @@ namespace HidLibrary
 
         public HidReport(int reportSize)
         {
-            Array.Resize(ref _data, reportSize);
+            Array.Resize(ref _data, reportSize - 1);
         }
 
         public HidReport(int reportSize, HidDeviceData deviceData)
