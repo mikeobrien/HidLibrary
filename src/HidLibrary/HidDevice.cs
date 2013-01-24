@@ -18,6 +18,7 @@ namespace HidLibrary
             Overlapped = 1
         }
 
+        private readonly string _description;
         private readonly string _devicePath;
         private readonly HidDeviceAttributes _deviceAttributes;
 
@@ -38,13 +39,14 @@ namespace HidLibrary
 
         public delegate void WriteCallback(bool success);
 
-        internal HidDevice(string devicePath)
+        internal HidDevice(string devicePath, string description = null)
         {
             _deviceEventMonitor = new HidDeviceEventMonitor(this);
             _deviceEventMonitor.Inserted += DeviceEventMonitorInserted;
             _deviceEventMonitor.Removed += DeviceEventMonitorRemoved;
 
             _devicePath = devicePath;
+            _description = description;
 
             try
             {
@@ -65,7 +67,7 @@ namespace HidLibrary
         public IntPtr WriteHandle { get; private set; }
         public bool IsOpen { get; private set; }
         public bool IsConnected { get { return HidDevices.IsConnected(_devicePath); } }
-        public string Description { get { return ToString(); } }
+        public string Description { get { return _description; } }
         public HidDeviceCapabilities Capabilities { get { return _deviceCapabilities; } }
         public HidDeviceAttributes Attributes { get { return _deviceAttributes; } }
         public string DevicePath { get { return _devicePath; } }

@@ -169,8 +169,21 @@ namespace HidLibrary
             internal string DevicePath;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct DEVPROPKEY
+        {
+            public Guid fmtid;
+            public ulong pid;
+        }
+
+        internal static DEVPROPKEY DEVPKEY_Device_BusReportedDeviceDesc = 
+            new DEVPROPKEY { fmtid = new Guid(0x540b947e, 0x8b40, 0x45bc, 0xa8, 0xa2, 0x6a, 0x0b, 0x89, 0x4c, 0xbd, 0xa2), pid = 4 };
+
 	    [DllImport("setupapi.dll", EntryPoint = "SetupDiGetDeviceRegistryProperty")]
-	    public static extern bool SetupDiGetDeviceRegistryProperty(IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, int propertyVal, int propertyRegDataType, byte[] propertyBuffer, int propertyBufferSize, IntPtr requiredSize);
+        public static extern bool SetupDiGetDeviceRegistryProperty(IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, int propertyVal, ref int propertyRegDataType, byte[] propertyBuffer, int propertyBufferSize, ref int requiredSize);
+	
+        [DllImport("setupapi.dll", EntryPoint = "SetupDiGetDevicePropertyW", SetLastError = true)]
+        public static extern bool SetupDiGetDeviceProperty(IntPtr deviceInfo, ref SP_DEVINFO_DATA deviceInfoData, ref DEVPROPKEY propkey, ref ulong propertyDataType, byte[] propertyBuffer, int propertyBufferSize, ref int requiredSize, uint flags);
 
 	    [DllImport("setupapi.dll")]
 	    static internal extern bool SetupDiEnumDeviceInfo(IntPtr deviceInfoSet, int memberIndex, ref SP_DEVINFO_DATA deviceInfoData);
@@ -179,13 +192,13 @@ namespace HidLibrary
 	    static internal extern IntPtr RegisterDeviceNotification(IntPtr hRecipient, IntPtr notificationFilter, Int32 flags);
 
         [DllImport("setupapi.dll")]
-        internal static extern int SetupDiCreateDeviceInfoList(ref System.Guid classGuid, int hwndParent);
+        internal static extern int SetupDiCreateDeviceInfoList(ref Guid classGuid, int hwndParent);
 
 	    [DllImport("setupapi.dll")]
 	    static internal extern int SetupDiDestroyDeviceInfoList(IntPtr deviceInfoSet);
 
 	    [DllImport("setupapi.dll")]
-	    static internal extern bool SetupDiEnumDeviceInterfaces(IntPtr deviceInfoSet, int deviceInfoData, ref System.Guid interfaceClassGuid, int memberIndex, ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData);
+        static internal extern bool SetupDiEnumDeviceInterfaces(IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, ref Guid interfaceClassGuid, int memberIndex, ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData);
 
 	    [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
         static internal extern IntPtr SetupDiGetClassDevs(ref System.Guid classGuid, string enumerator, int hwndParent, int flags);

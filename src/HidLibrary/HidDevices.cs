@@ -12,7 +12,7 @@ namespace HidLibrary
 
         public static bool IsConnected(string devicePath)
         {
-            return EnumerateHidDevices().Where(x => x == devicePath).Any();
+            return EnumerateDevices().Any(x => x.Path == devicePath);
         }
 
         public static HidDevice GetDevice(string devicePath)
@@ -22,33 +22,35 @@ namespace HidLibrary
 
         public static IEnumerable<HidDevice> Enumerate()
         {
-            return EnumerateHidDevices().Select(x => new HidDevice(x));
+            return EnumerateDevices().Select(x => new HidDevice(x.Path, x.Description));
         }
 
         public static IEnumerable<HidDevice> Enumerate(string devicePath)
         {
-            return EnumerateHidDevices().Where(x => x == devicePath).Select(x => new HidDevice(x));
+            return EnumerateDevices().Where(x => x.Path == devicePath).Select(x => new HidDevice(x.Path, x.Description));
         }
 
         public static IEnumerable<HidDevice> Enumerate(int vendorId, params int[] productIds)
         {
-            return EnumerateHidDevices().Select(x => new HidDevice(x)).Where(x => x.Attributes.VendorId == vendorId && 
+            return EnumerateDevices().Select(x => new HidDevice(x.Path, x.Description)).Where(x => x.Attributes.VendorId == vendorId && 
                                                                                   productIds.Contains(x.Attributes.ProductId));
         }
 
         public static IEnumerable<HidDevice> Enumerate(int vendorId)
         {
-            return EnumerateHidDevices().Select(x => new HidDevice(x)).Where(x => x.Attributes.VendorId == vendorId);
+            return EnumerateDevices().Select(x => new HidDevice(x.Path, x.Description)).Where(x => x.Attributes.VendorId == vendorId);
         }
 
-        private static IEnumerable<string> EnumerateHidDevices()
+        private class DeviceInfo { public string Path { get; set; } public string Description { get; set; } }
+
+        private static IEnumerable<DeviceInfo> EnumerateDevices()
         {
+            var devices = new List<DeviceInfo>();
             var hidClass = HidClassGuid;
             var deviceInfoSet = NativeMethods.SetupDiGetClassDevs(ref hidClass, null, 0, NativeMethods.DIGCF_PRESENT | NativeMethods.DIGCF_DEVICEINTERFACE);
 
             if (deviceInfoSet.ToInt32() != NativeMethods.INVALID_HANDLE_VALUE)
             {
-                var devices = new List<string>();
                 var deviceInfoData = CreateDeviceInfoData();
                 var deviceIndex = 0;
 
@@ -60,21 +62,18 @@ namespace HidLibrary
                     deviceInterfaceData.cbSize = Marshal.SizeOf(deviceInterfaceData);
                     var deviceInterfaceIndex = 0;
 
-                    while (NativeMethods.SetupDiEnumDeviceInterfaces(deviceInfoSet, 0, ref hidClass, deviceInterfaceIndex, ref deviceInterfaceData))
+                    while (NativeMethods.SetupDiEnumDeviceInterfaces(deviceInfoSet, ref deviceInfoData, ref hidClass, deviceInterfaceIndex, ref deviceInterfaceData))
                     {
                         deviceInterfaceIndex++;
                         var devicePath = GetDevicePath(deviceInfoSet, deviceInterfaceData);
-                        if (devices.Any(x => x == devicePath)) continue;
-                        devices.Add(devicePath);
+                        var description = GetBusReportedDeviceDescription(deviceInfoSet, ref deviceInfoData) ?? 
+                                          GetDeviceDescription(deviceInfoSet, ref deviceInfoData);
+                        devices.Add(new DeviceInfo { Path = devicePath, Description = description });
                     }
                 }
                 NativeMethods.SetupDiDestroyDeviceInfoList(deviceInfoSet);
-
-                foreach (string devicePath in devices)
-                {
-                    yield return devicePath;
-                }
             }
+            return devices;
         }
 
         private static NativeMethods.SP_DEVINFO_DATA CreateDeviceInfoData()
@@ -107,6 +106,47 @@ namespace HidLibrary
                 if (_hidClassGuid.Equals(Guid.Empty)) NativeMethods.HidD_GetHidGuid(ref _hidClassGuid);
                 return _hidClassGuid;
             }
+        }
+
+        private static string GetDeviceDescription(IntPtr deviceInfoSet, ref NativeMethods.SP_DEVINFO_DATA devinfoData)
+        {
+            var descriptionBuffer = new byte[1024];
+
+            var requiredSize = 0;
+            var type = 0;
+
+            NativeMethods.SetupDiGetDeviceRegistryProperty(deviceInfoSet,
+                                                            ref devinfoData,
+                                                            NativeMethods.SPDRP_DEVICEDESC,
+                                                            ref type,
+                                                            descriptionBuffer,
+                                                            descriptionBuffer.Length,
+                                                            ref requiredSize);
+
+            return descriptionBuffer.ToUTF8String();
+        }
+
+        private static string GetBusReportedDeviceDescription(IntPtr deviceInfoSet, ref NativeMethods.SP_DEVINFO_DATA devinfoData)
+        {
+            var descriptionBuffer = new byte[1024];
+
+            if (Environment.OSVersion.Version.Major > 5)
+            {
+                ulong propertyType = 0;
+                var requiredSize = 0;
+
+                var _continue = NativeMethods.SetupDiGetDeviceProperty(deviceInfoSet,
+                                                                        ref devinfoData,
+                                                                        ref NativeMethods.DEVPKEY_Device_BusReportedDeviceDesc,
+                                                                        ref propertyType,
+                                                                        descriptionBuffer,
+                                                                        descriptionBuffer.Length,
+                                                                        ref requiredSize,
+                                                                        0);
+
+                if (_continue) return descriptionBuffer.ToUTF16String();
+            }
+            return null;
         }
     }
 }
