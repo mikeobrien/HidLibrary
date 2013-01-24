@@ -17,5 +17,6 @@
         public int Version { get; private set; }
         public string VendorHexId { get; set; }
         public string ProductHexId { get; set; }
+        public string BusReportedDescription { get; set; }
     }
 }
