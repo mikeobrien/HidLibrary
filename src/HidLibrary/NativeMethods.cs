@@ -36,11 +36,17 @@ namespace HidLibrary
 		    public bool bInheritHandle;
 	    }
 
-	    [DllImport("kernel32.dll")]
-	    static internal extern int CancelIo(int hFile);
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Auto)]
+        static internal extern bool CancelIo(IntPtr hFile);
 
-	    [DllImport("kernel32.dll", SetLastError = true)]
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Auto)]
+        static internal extern bool CancelIoEx(IntPtr hFile, IntPtr lpOverlapped);
+
+	    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Auto)]
 	    static internal extern bool CloseHandle(IntPtr hObject);
+
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Auto)]
+        static internal extern bool CancelSynchronousIo(IntPtr hObject);
 
 	    [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
 	    static internal extern IntPtr CreateEvent(ref SECURITY_ATTRIBUTES securityAttributes, int bManualReset, int bInitialState, string lpName);
