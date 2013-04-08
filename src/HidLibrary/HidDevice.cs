@@ -173,6 +173,45 @@ namespace HidLibrary
             return ReadReport(0);
         }
 
+		public bool ReadFeatureData(out byte[] data, byte reportId = 0)
+		{
+			if (_deviceCapabilities.FeatureReportByteLength <= 0)
+			{
+				data = new byte[0];
+				return false;
+			}
+
+			data = new byte[_deviceCapabilities.FeatureReportByteLength];
+
+			var buffer = CreateFeatureOutputBuffer();
+			buffer[0] = reportId;
+
+			IntPtr hidHandle = IntPtr.Zero;
+			bool success = false;
+			try
+			{
+				hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+
+				success = NativeMethods.HidD_GetFeature(hidHandle, buffer, buffer.Length);
+
+				if (success)
+				{
+					Array.Copy(buffer, 0, data, 0, Math.Min(data.Length, _deviceCapabilities.FeatureReportByteLength));
+				}
+			}
+			catch (Exception exception)
+			{
+				throw new Exception(string.Format("Error accessing HID device '{0}'.", _devicePath), exception);
+			}
+			finally
+			{
+				if (hidHandle != IntPtr.Zero)
+					CloseDeviceIO(hidHandle);
+			}
+
+			return success;
+		}
+
         public void Write(byte[] data, WriteCallback callback)
         {
             var writeDelegate = new WriteDelegate(Write);

@@ -297,7 +297,7 @@ namespace HidLibrary
 	    static internal extern bool HidD_GetAttributes(IntPtr hidDeviceObject, ref HIDD_ATTRIBUTES attributes);
 
 	    [DllImport("hid.dll")]
-	    static internal extern bool HidD_GetFeature(IntPtr hidDeviceObject, ref byte lpReportBuffer, int reportBufferLength);
+	    static internal extern bool HidD_GetFeature(IntPtr hidDeviceObject, byte[] lpReportBuffer, int reportBufferLength);
 
 	    [DllImport("hid.dll")]
 	    static internal extern bool HidD_GetInputReport(IntPtr hidDeviceObject, ref byte lpReportBuffer, int reportBufferLength);
