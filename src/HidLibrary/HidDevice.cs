@@ -518,7 +518,10 @@ namespace HidLibrary
 
         private static void CloseDeviceIO(IntPtr handle)
         {
-            NativeMethods.CancelIoEx(handle, IntPtr.Zero);
+            if (Environment.OSVersion.Version.Major > 5)
+            {
+                NativeMethods.CancelIoEx(handle, IntPtr.Zero);
+            }
             NativeMethods.CloseHandle(handle);
         }
 
