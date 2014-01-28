@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Text;
 
 namespace HidLibrary
 {
@@ -212,6 +213,78 @@ namespace HidLibrary
 			return success;
 		}
 
+        public bool ReadProduct(out StringBuilder data)
+        {
+            data = new StringBuilder(64);
+            IntPtr hidHandle = IntPtr.Zero;
+            bool success = false;
+            try
+            {
+                hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+
+                success = NativeMethods.HidD_GetProductString(hidHandle, data, data.Capacity);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(string.Format("Error accessing HID device '{0}'.", _devicePath), exception);
+            }
+            finally
+            {
+                if (hidHandle != IntPtr.Zero)
+                    CloseDeviceIO(hidHandle);
+            }
+
+            return success;
+        }
+
+        public bool ReadManufacturer(out StringBuilder data)
+        {
+            data = new StringBuilder(64);
+            IntPtr hidHandle = IntPtr.Zero;
+            bool success = false;
+            try
+            {
+                hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+
+                success = NativeMethods.HidD_GetManufacturerString(hidHandle, data, data.Capacity);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(string.Format("Error accessing HID device '{0}'.", _devicePath), exception);
+            }
+            finally
+            {
+                if (hidHandle != IntPtr.Zero)
+                    CloseDeviceIO(hidHandle);
+            }
+
+            return success;
+        }
+
+        public bool ReadSerialNumber(out StringBuilder data)
+        {
+            data = new StringBuilder(64);
+            IntPtr hidHandle = IntPtr.Zero;
+            bool success = false;
+            try
+            {
+                hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+
+                success = NativeMethods.HidD_GetSerialNumberString(hidHandle, data, data.Capacity);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(string.Format("Error accessing HID device '{0}'.", _devicePath), exception);
+            }
+            finally
+            {
+                if (hidHandle != IntPtr.Zero)
+                    CloseDeviceIO(hidHandle);
+            }
+
+            return success;
+        }
+
         public void Write(byte[] data, WriteCallback callback)
         {
             var writeDelegate = new WriteDelegate(Write);
@@ -278,7 +351,7 @@ namespace HidLibrary
             {
                 hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
-                var overlapped = new NativeOverlapped();
+                //var overlapped = new NativeOverlapped();
                 success = NativeMethods.HidD_SetFeature(hidHandle, buffer, buffer.Length);
             }
             catch (Exception exception)

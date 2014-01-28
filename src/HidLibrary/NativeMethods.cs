@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace HidLibrary
 {
@@ -328,5 +329,14 @@ namespace HidLibrary
 
 	    [DllImport("hid.dll")]
 	    static internal extern int HidP_GetValueCaps(short reportType, ref byte valueCaps, ref short valueCapsLength, IntPtr preparsedData);
+
+        [DllImport("hid.dll", CharSet = CharSet.Unicode)]
+        internal static extern bool HidD_GetProductString(IntPtr hidDeviceObject, StringBuilder lpReportBuffer, int ReportBufferLength);
+
+        [DllImport("hid.dll", CharSet = CharSet.Unicode)]
+        internal static extern bool HidD_GetManufacturerString(IntPtr hidDeviceObject, StringBuilder lpReportBuffer, int ReportBufferLength);
+
+        [DllImport("hid.dll", CharSet = CharSet.Unicode)]
+        internal static extern bool HidD_GetSerialNumberString(IntPtr hidDeviceObject, StringBuilder lpReportBuffer, int reportBufferLength);
     }
 }
