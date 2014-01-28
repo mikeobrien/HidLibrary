@@ -212,6 +212,78 @@ namespace HidLibrary
 			return success;
 		}
 
+        public bool ReadProduct(out byte[] data)
+        {
+            data = new byte[64];
+            IntPtr hidHandle = IntPtr.Zero;
+            bool success = false;
+            try
+            {
+                hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+
+                success = NativeMethods.HidD_GetProductString(hidHandle, ref data[0], data.Length);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(string.Format("Error accessing HID device '{0}'.", _devicePath), exception);
+            }
+            finally
+            {
+                if (hidHandle != IntPtr.Zero)
+                    CloseDeviceIO(hidHandle);
+            }
+
+            return success;
+        }
+
+        public bool ReadManufacturer(out byte[] data)
+        {
+            data = new byte[64];
+            IntPtr hidHandle = IntPtr.Zero;
+            bool success = false;
+            try
+            {
+                hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+
+                success = NativeMethods.HidD_GetManufacturerString(hidHandle, ref data[0], data.Length);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(string.Format("Error accessing HID device '{0}'.", _devicePath), exception);
+            }
+            finally
+            {
+                if (hidHandle != IntPtr.Zero)
+                    CloseDeviceIO(hidHandle);
+            }
+
+            return success;
+        }
+
+        public bool ReadSerialNumber(out byte[] data)
+        {
+            data = new byte[64];
+            IntPtr hidHandle = IntPtr.Zero;
+            bool success = false;
+            try
+            {
+                hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+
+                success = NativeMethods.HidD_GetSerialNumberString(hidHandle, ref data[0], data.Length);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(string.Format("Error accessing HID device '{0}'.", _devicePath), exception);
+            }
+            finally
+            {
+                if (hidHandle != IntPtr.Zero)
+                    CloseDeviceIO(hidHandle);
+            }
+
+            return success;
+        }
+
         public void Write(byte[] data, WriteCallback callback)
         {
             var writeDelegate = new WriteDelegate(Write);
