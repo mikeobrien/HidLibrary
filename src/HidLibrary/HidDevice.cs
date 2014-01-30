@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Text;
 
 namespace HidLibrary
 {
@@ -213,16 +212,16 @@ namespace HidLibrary
 			return success;
 		}
 
-        public bool ReadProduct(out StringBuilder data)
+        public bool ReadProduct(out byte[] data)
         {
-            data = new StringBuilder(64);
+            data = new byte[64];
             IntPtr hidHandle = IntPtr.Zero;
             bool success = false;
             try
             {
                 hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
-                success = NativeMethods.HidD_GetProductString(hidHandle, data, data.Capacity);
+                success = NativeMethods.HidD_GetProductString(hidHandle, ref data[0], data.Length);
             }
             catch (Exception exception)
             {
@@ -237,16 +236,16 @@ namespace HidLibrary
             return success;
         }
 
-        public bool ReadManufacturer(out StringBuilder data)
+        public bool ReadManufacturer(out byte[] data)
         {
-            data = new StringBuilder(64);
+            data = new byte[64];
             IntPtr hidHandle = IntPtr.Zero;
             bool success = false;
             try
             {
                 hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
-                success = NativeMethods.HidD_GetManufacturerString(hidHandle, data, data.Capacity);
+                success = NativeMethods.HidD_GetManufacturerString(hidHandle, ref data[0], data.Length);
             }
             catch (Exception exception)
             {
@@ -261,16 +260,16 @@ namespace HidLibrary
             return success;
         }
 
-        public bool ReadSerialNumber(out StringBuilder data)
+        public bool ReadSerialNumber(out byte[] data)
         {
-            data = new StringBuilder(64);
+            data = new byte[64];
             IntPtr hidHandle = IntPtr.Zero;
             bool success = false;
             try
             {
                 hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
-                success = NativeMethods.HidD_GetSerialNumberString(hidHandle, data, data.Capacity);
+                success = NativeMethods.HidD_GetSerialNumberString(hidHandle, ref data[0], data.Length);
             }
             catch (Exception exception)
             {
