@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HidEnumerator.cs" />
     <Compile Include="Hid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
