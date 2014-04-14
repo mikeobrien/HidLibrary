@@ -48,8 +48,10 @@
     <Compile Include="HidDeviceCapabilities.cs" />
     <Compile Include="HidDeviceData.cs" />
     <Compile Include="HidDeviceEventMonitor.cs" />
+    <Compile Include="IHidEnumerator.cs" />
     <Compile Include="HidDevices.cs" />
     <Compile Include="HidReport.cs" />
+    <Compile Include="IHidDevice.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

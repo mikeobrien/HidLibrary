@@ -4,20 +4,11 @@ using System.Threading;
 
 namespace HidLibrary
 {
-    public class HidDevice : IDisposable
+    public class HidDevice : IHidDevice
     {
         public event InsertedEventHandler Inserted;
         public event RemovedEventHandler Removed;
-
-        public delegate void InsertedEventHandler();
-        public delegate void RemovedEventHandler();
-
-        public enum DeviceMode
-        {
-            NonOverlapped = 0,
-            Overlapped = 1
-        }
-
+        
         private readonly string _description;
         private readonly string _devicePath;
         private readonly HidDeviceAttributes _deviceAttributes;
@@ -33,11 +24,6 @@ namespace HidLibrary
         private delegate HidReport ReadReportDelegate();
         private delegate bool WriteDelegate(byte[] data);
         private delegate bool WriteReportDelegate(HidReport report);
-
-        public delegate void ReadCallback(HidDeviceData data);
-        public delegate void ReadReportCallback(HidReport report);
-
-        public delegate void WriteCallback(bool success);
 
         internal HidDevice(string devicePath, string description = null)
         {
@@ -350,7 +336,7 @@ namespace HidLibrary
             {
                 hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
-                var overlapped = new NativeOverlapped();
+                //var overlapped = new NativeOverlapped();
                 success = NativeMethods.HidD_SetFeature(hidHandle, buffer, buffer.Length);
             }
             catch (Exception exception)
