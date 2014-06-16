@@ -20,8 +20,8 @@ namespace HidLibrary
         private readonly HidDeviceEventMonitor _deviceEventMonitor;
         
         private bool _monitorDeviceEvents;
-        private delegate HidDeviceData ReadDelegate();
-        private delegate HidReport ReadReportDelegate();
+        protected delegate HidDeviceData ReadDelegate();
+        protected delegate HidReport ReadReportDelegate();
         private delegate bool WriteDelegate(byte[] data);
         private delegate bool WriteReportDelegate(HidReport report);
 
@@ -351,7 +351,7 @@ namespace HidLibrary
             return success;
         }
 
-        private static void EndRead(IAsyncResult ar)
+        protected static void EndRead(IAsyncResult ar)
         {
             var hidAsyncState = (HidAsyncState)ar.AsyncState;
             var callerDelegate = (ReadDelegate)hidAsyncState.CallerDelegate;
@@ -361,7 +361,7 @@ namespace HidLibrary
             if ((callbackDelegate != null)) callbackDelegate.Invoke(data);
         }
 
-        private static void EndReadReport(IAsyncResult ar)
+        protected static void EndReadReport(IAsyncResult ar)
         {
             var hidAsyncState = (HidAsyncState)ar.AsyncState;
             var callerDelegate = (ReadReportDelegate)hidAsyncState.CallerDelegate;
@@ -489,7 +489,7 @@ namespace HidLibrary
             }
         }
 
-        private HidDeviceData ReadData(int timeout)
+        protected HidDeviceData ReadData(int timeout)
         {
             var buffer = new byte[] { };
             var status = HidDeviceData.ReadStatus.NoDataRead;
