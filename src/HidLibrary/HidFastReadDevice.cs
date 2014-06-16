@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace HidLibrary
+﻿namespace HidLibrary
 {
     public class HidFastReadDevice : HidDevice
     {
+        internal HidFastReadDevice(string devicePath, string description = null)
+             : base(devicePath, description) { }
+
         // FastRead assumes that the device is connected,
         // which could cause stability issues if hardware is
         // disconnected during a read
