@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace HidLibrary
 {
@@ -8,7 +9,7 @@ namespace HidLibrary
     {
         public event InsertedEventHandler Inserted;
         public event RemovedEventHandler Removed;
-        
+
         private readonly string _description;
         private readonly string _devicePath;
         private readonly HidDeviceAttributes _deviceAttributes;
@@ -18,12 +19,12 @@ namespace HidLibrary
         private DeviceMode _deviceWriteMode = DeviceMode.NonOverlapped;
 
         private readonly HidDeviceEventMonitor _deviceEventMonitor;
-        
+
         private bool _monitorDeviceEvents;
-        protected delegate HidDeviceData ReadDelegate();
-        protected delegate HidReport ReadReportDelegate();
-        private delegate bool WriteDelegate(byte[] data);
-        private delegate bool WriteReportDelegate(HidReport report);
+        protected delegate HidDeviceData ReadDelegate(int timeout);
+        protected delegate HidReport ReadReportDelegate(int timeout);
+        private delegate bool WriteDelegate(byte[] data, int timeout);
+        private delegate bool WriteReportDelegate(HidReport report, int timeout);
 
         internal HidDevice(string devicePath, string description = null)
         {
@@ -70,7 +71,7 @@ namespace HidLibrary
 
         public override string ToString()
         {
-            return string.Format("VendorID={0}, ProductID={1}, Version={2}, DevicePath={3}", 
+            return string.Format("VendorID={0}, ProductID={1}, Version={2}, DevicePath={3}",
                                 _deviceAttributes.VendorHexId,
                                 _deviceAttributes.ProductHexId,
                                 _deviceAttributes.Version,
@@ -117,13 +118,6 @@ namespace HidLibrary
             return Read(0);
         }
 
-        public void Read(ReadCallback callback)
-        {
-            var readDelegate = new ReadDelegate(Read);
-            var asyncState = new HidAsyncState(readDelegate, callback);
-            readDelegate.BeginInvoke(EndRead, asyncState);
-        }
-
         public HidDeviceData Read(int timeout)
         {
             if (IsConnected)
@@ -142,16 +136,22 @@ namespace HidLibrary
             return new HidDeviceData(HidDeviceData.ReadStatus.NotConnected);
         }
 
-        public void ReadReport(ReadReportCallback callback)
+        public void Read(ReadCallback callback)
         {
-            var readReportDelegate = new ReadReportDelegate(ReadReport);
-            var asyncState = new HidAsyncState(readReportDelegate, callback);
-            readReportDelegate.BeginInvoke(EndReadReport, asyncState);
+            Read(callback, 0);
         }
 
-        public HidReport ReadReport(int timeout)
+        public void Read(ReadCallback callback, int timeout)
         {
-            return new HidReport(Capabilities.InputReportByteLength, Read(timeout));
+            var readDelegate = new ReadDelegate(Read);
+            var asyncState = new HidAsyncState(readDelegate, callback);
+            readDelegate.BeginInvoke(timeout, EndRead, asyncState);
+        }
+
+        public async Task<HidDeviceData> ReadAsync(int timeout = 0)
+        {
+            var readDelegate = new ReadDelegate(Read);
+            return await Task<HidDeviceData>.Factory.FromAsync(readDelegate.BeginInvoke, readDelegate.EndInvoke, timeout, null);
         }
 
         public HidReport ReadReport()
@@ -159,44 +159,67 @@ namespace HidLibrary
             return ReadReport(0);
         }
 
-		public bool ReadFeatureData(out byte[] data, byte reportId = 0)
-		{
-			if (_deviceCapabilities.FeatureReportByteLength <= 0)
-			{
-				data = new byte[0];
-				return false;
-			}
+        public HidReport ReadReport(int timeout)
+        {
+            return new HidReport(Capabilities.InputReportByteLength, Read(timeout));
+        }
 
-			data = new byte[_deviceCapabilities.FeatureReportByteLength];
+        public void ReadReport(ReadReportCallback callback)
+        {
+            ReadReport(callback, 0);
+        }
 
-			var buffer = CreateFeatureOutputBuffer();
-			buffer[0] = reportId;
+        public void ReadReport(ReadReportCallback callback, int timeout)
+        {
+            var readReportDelegate = new ReadReportDelegate(ReadReport);
+            var asyncState = new HidAsyncState(readReportDelegate, callback);
+            readReportDelegate.BeginInvoke(timeout, EndReadReport, asyncState);
+        }
 
-			IntPtr hidHandle = IntPtr.Zero;
-			bool success = false;
-			try
-			{
-				hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+        public async Task<HidReport> ReadReportAsync(int timeout = 0)
+        {
+            var readReportDelegate = new ReadReportDelegate(ReadReport);
+            return await Task<HidReport>.Factory.FromAsync(readReportDelegate.BeginInvoke, readReportDelegate.EndInvoke, timeout, null);
+        }
 
-				success = NativeMethods.HidD_GetFeature(hidHandle, buffer, buffer.Length);
+        public bool ReadFeatureData(out byte[] data, byte reportId = 0)
+        {
+            if (_deviceCapabilities.FeatureReportByteLength <= 0)
+            {
+                data = new byte[0];
+                return false;
+            }
 
-				if (success)
-				{
-					Array.Copy(buffer, 0, data, 0, Math.Min(data.Length, _deviceCapabilities.FeatureReportByteLength));
-				}
-			}
-			catch (Exception exception)
-			{
-				throw new Exception(string.Format("Error accessing HID device '{0}'.", _devicePath), exception);
-			}
-			finally
-			{
-				if (hidHandle != IntPtr.Zero)
-					CloseDeviceIO(hidHandle);
-			}
+            data = new byte[_deviceCapabilities.FeatureReportByteLength];
 
-			return success;
-		}
+            var buffer = CreateFeatureOutputBuffer();
+            buffer[0] = reportId;
+
+            IntPtr hidHandle = IntPtr.Zero;
+            bool success = false;
+            try
+            {
+                hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+
+                success = NativeMethods.HidD_GetFeature(hidHandle, buffer, buffer.Length);
+
+                if (success)
+                {
+                    Array.Copy(buffer, 0, data, 0, Math.Min(data.Length, _deviceCapabilities.FeatureReportByteLength));
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(string.Format("Error accessing HID device '{0}'.", _devicePath), exception);
+            }
+            finally
+            {
+                if (hidHandle != IntPtr.Zero)
+                    CloseDeviceIO(hidHandle);
+            }
+
+            return success;
+        }
 
         public bool ReadProduct(out byte[] data)
         {
@@ -270,13 +293,6 @@ namespace HidLibrary
             return success;
         }
 
-        public void Write(byte[] data, WriteCallback callback)
-        {
-            var writeDelegate = new WriteDelegate(Write);
-            var asyncState = new HidAsyncState(writeDelegate, callback);
-            writeDelegate.BeginInvoke(data, EndWrite, asyncState);
-        }
-
         public bool Write(byte[] data)
         {
             return Write(data, 0);
@@ -299,11 +315,22 @@ namespace HidLibrary
             return false;
         }
 
-        public void WriteReport(HidReport report, WriteCallback callback)
+        public void Write(byte[] data, WriteCallback callback)
         {
-            var writeReportDelegate = new WriteReportDelegate(WriteReport);
-            var asyncState = new HidAsyncState(writeReportDelegate, callback);
-            writeReportDelegate.BeginInvoke(report, EndWriteReport, asyncState);
+            Write(data, callback, 0);
+        }
+
+        public void Write(byte[] data, WriteCallback callback, int timeout)
+        {
+            var writeDelegate = new WriteDelegate(Write);
+            var asyncState = new HidAsyncState(writeDelegate, callback);
+            writeDelegate.BeginInvoke(data, timeout, EndWrite, asyncState);
+        }
+
+        public async Task<bool> WriteAsync(byte[] data, int timeout = 0)
+        {
+            var writeDelegate = new WriteDelegate(Write);
+            return await Task<bool>.Factory.FromAsync(writeDelegate.BeginInvoke, writeDelegate.EndInvoke, data, timeout, null);
         }
 
         public bool WriteReport(HidReport report)
@@ -314,6 +341,24 @@ namespace HidLibrary
         public bool WriteReport(HidReport report, int timeout)
         {
             return Write(report.GetBytes(), timeout);
+        }
+
+        public void WriteReport(HidReport report, WriteCallback callback)
+        {
+            WriteReport(report, callback, 0);
+        }
+
+        public void WriteReport(HidReport report, WriteCallback callback, int timeout)
+        {
+            var writeReportDelegate = new WriteReportDelegate(WriteReport);
+            var asyncState = new HidAsyncState(writeReportDelegate, callback);
+            writeReportDelegate.BeginInvoke(report, timeout, EndWriteReport, asyncState);
+        }
+
+        public async Task<bool> WriteReportAsync(HidReport report, int timeout = 0)
+        {
+            var writeReportDelegate = new WriteReportDelegate(WriteReport);
+            return await Task<bool>.Factory.FromAsync(writeReportDelegate.BeginInvoke, writeReportDelegate.EndInvoke, report, timeout, null);
         }
 
         public HidReport CreateReport()
@@ -523,9 +568,9 @@ namespace HidLibrary
                         switch (result)
                         {
                             case NativeMethods.WAIT_OBJECT_0: status = HidDeviceData.ReadStatus.Success; break;
-                            case NativeMethods.WAIT_TIMEOUT: 
+                            case NativeMethods.WAIT_TIMEOUT:
                                 status = HidDeviceData.ReadStatus.WaitTimedOut;
-                                buffer = new byte[] {};
+                                buffer = new byte[] { };
                                 break;
                             case NativeMethods.WAIT_FAILED:
                                 status = HidDeviceData.ReadStatus.WaitFail;
@@ -545,7 +590,7 @@ namespace HidLibrary
                     try
                     {
                         var overlapped = new NativeOverlapped();
-                        
+
                         NativeMethods.ReadFile(ReadHandle, buffer, (uint)buffer.Length, out bytesRead, ref overlapped);
                         status = HidDeviceData.ReadStatus.Success;
                     }
