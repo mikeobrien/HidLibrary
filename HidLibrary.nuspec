@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+   <metadata>
+      <id>hidlibrary</id>
+      <version>0.0.0.0</version>
+      <title>Hid Library</title>
+      <authors>Mike O'Brien</authors>
+      <description>This library enables you to enumerate and communicate with Hid compatible USB devices in .NET.</description>
+      <releaseNotes />
+      <copyright />
+      <language>en-US</language>
+      <licenseUrl>https://github.com/mikeobrien/HidLibrary/blob/master/LICENSE</licenseUrl>
+      <projectUrl>https://github.com/mikeobrien/HidLibrary</projectUrl>
+      <owners>Mike O'Brien</owners>
+      <summary>This library enables you to enumerate and communicate with Hid compatible USB devices in .NET.</summary>
+      <iconUrl>https://github.com/mikeobrien/HidLibrary/raw/master/misc/logo.png</iconUrl>
+      <tags>usb hid</tags>
+   </metadata>
+   <files>
+      <file src="src\HidLibrary\bin\Release\HidLibrary.*" target="lib" />
+   </files>
+</package>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>PackageTest</id>
+    <version>1.0.0</version>
+    <authors>SPA Tools</authors>
+    <owners>SPA Tools</owners>
+    <licenseUrl>https://github.com/spatools/grunt-nuget/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/spatools/grunt-nuget</projectUrl>
+    <iconUrl>https://github.com/spatools/grunt-nuget</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>PackageTest description</description>
+    <releaseNotes>Changes of Test Packages</releaseNotes>
+    <copyright>Copyright SPA Tools 2013</copyright>
+    <tags>Test Package Grunt NuGet Packer</tags>
+    <dependencies></dependencies>
+  </metadata>
+  <files>
+    <file src="..\tasks\nuget-pack.js" target="Content\tasks" />
+    <file src="..\Gruntfile.js" target="Content" />
+  </files>
+</package>
