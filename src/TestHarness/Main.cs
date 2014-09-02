@@ -36,6 +36,7 @@ namespace TestHarness
         private void Scan_MouseDown(object sender, MouseEventArgs e)
         {
             var outData = _deviceList[Devices.SelectedIndex].CreateReport();
+            if (outData == null) return;
 
             outData.ReportId = 0x4;
             outData.Data[0] = 0x4;
@@ -46,6 +47,7 @@ namespace TestHarness
         private void Scan_MouseUp(object sender, MouseEventArgs e)
         {
             var outData = _deviceList[Devices.SelectedIndex].CreateReport();
+            if (outData == null) return;
 
             outData.ReportId = 0x4;
             outData.Data[0] = 0x1;
@@ -56,6 +58,7 @@ namespace TestHarness
         private void ErrorBeep_Click(object sender, EventArgs e)
         {
             var report = _deviceList[Devices.SelectedIndex].CreateReport();
+            if (report == null) return;
 
             report.ReportId = 0x4;
             report.Data[0] = 0x20;
@@ -66,6 +69,7 @@ namespace TestHarness
         private void SuccessBeep_Click(object sender, EventArgs e)
         {
             var outData = _deviceList[Devices.SelectedIndex].CreateReport();
+            if (outData == null) return;
 
             outData.ReportId = 0x4;
             outData.Data[0] = 0x40;

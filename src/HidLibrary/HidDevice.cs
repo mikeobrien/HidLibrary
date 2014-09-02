@@ -316,7 +316,9 @@ namespace HidLibrary
 
         public HidReport CreateReport()
         {
-            return new HidReport(Capabilities.OutputReportByteLength);
+            if (Capabilities.OutputReportByteLength > 0)
+                return new HidReport(Capabilities.OutputReportByteLength);
+            return null;
         }
 
         public bool WriteFeatureData(byte[] data)
