@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.Devices = new System.Windows.Forms.ListBox();
-            this.Refresh = new System.Windows.Forms.Button();
+            this.RefreshBtn = new System.Windows.Forms.Button();
             this.Scan = new System.Windows.Forms.Button();
             this.Read = new System.Windows.Forms.Button();
             this.SuccessBeep = new System.Windows.Forms.Button();
@@ -51,13 +51,13 @@
             // 
             // Refresh
             // 
-            this.Refresh.Location = new System.Drawing.Point(350, 164);
-            this.Refresh.Name = "Refresh";
-            this.Refresh.Size = new System.Drawing.Size(75, 23);
-            this.Refresh.TabIndex = 1;
-            this.Refresh.Text = "Refresh";
-            this.Refresh.UseVisualStyleBackColor = true;
-            this.Refresh.Click += new System.EventHandler(this.Refresh_Click);
+            this.RefreshBtn.Location = new System.Drawing.Point(350, 164);
+            this.RefreshBtn.Name = "Refresh";
+            this.RefreshBtn.Size = new System.Drawing.Size(75, 23);
+            this.RefreshBtn.TabIndex = 1;
+            this.RefreshBtn.Text = "Refresh";
+            this.RefreshBtn.UseVisualStyleBackColor = true;
+            this.RefreshBtn.Click += new System.EventHandler(this.Refresh_Click);
             // 
             // Scan
             // 
@@ -121,7 +121,7 @@
             this.Controls.Add(this.SuccessBeep);
             this.Controls.Add(this.Read);
             this.Controls.Add(this.Scan);
-            this.Controls.Add(this.Refresh);
+            this.Controls.Add(this.RefreshBtn);
             this.Controls.Add(this.Devices);
             this.Name = "Main";
             this.Text = "Hid Test Harness";
@@ -134,7 +134,7 @@
         #endregion
 
         private System.Windows.Forms.ListBox Devices;
-        private System.Windows.Forms.Button Refresh;
+        private System.Windows.Forms.Button RefreshBtn;
         private System.Windows.Forms.Button Scan;
         private System.Windows.Forms.Button Read;
         private System.Windows.Forms.Button SuccessBeep;

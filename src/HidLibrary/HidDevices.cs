@@ -128,14 +128,12 @@ namespace HidLibrary
 
         private static string GetBusReportedDeviceDescription(IntPtr deviceInfoSet, ref NativeMethods.SP_DEVINFO_DATA devinfoData)
         {
-            var descriptionBuffer = new byte[1024];
-
             if (Environment.OSVersion.Version.Major > 5)
             {
                 ulong propertyType = 0;
-                var requiredSize = 0;
-
-                var _continue = NativeMethods.SetupDiGetDeviceProperty(deviceInfoSet,
+                int requiredSize = 0;
+                var descriptionBuffer = new byte[1024];
+                bool success = NativeMethods.SetupDiGetDeviceProperty(deviceInfoSet,
                                                                         ref devinfoData,
                                                                         ref NativeMethods.DEVPKEY_Device_BusReportedDeviceDesc,
                                                                         ref propertyType,
@@ -144,7 +142,7 @@ namespace HidLibrary
                                                                         ref requiredSize,
                                                                         0);
 
-                if (_continue) return descriptionBuffer.ToUTF16String();
+                if (success) return descriptionBuffer.ToUTF16String();
             }
             return null;
         }

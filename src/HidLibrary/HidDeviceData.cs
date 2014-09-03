@@ -12,13 +12,7 @@
             NotConnected = 5
         }
 
-        public HidDeviceData(ReadStatus status)
-	    {
-		    Data = new byte[] {};
-		    Status = status;
-	    }
-
-        public HidDeviceData(byte[] data, ReadStatus status)
+        public HidDeviceData(ReadStatus status, byte[] data = null)
         {
             Data = data;
             Status = status;
