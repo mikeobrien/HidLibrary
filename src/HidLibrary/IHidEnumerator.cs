@@ -27,31 +27,27 @@ namespace HidLibrary
 
         public IHidDevice GetDevice(string devicePath)
         {
-            return HidDevices.GetDevice(devicePath) as IHidDevice;
+            return HidDevices.GetDevice(devicePath);
         }
 
         public IEnumerable<IHidDevice> Enumerate()
         {
-            return HidDevices.Enumerate().
-                Select(d => d as IHidDevice);
+            return HidDevices.Enumerate();
         }
 
         public IEnumerable<IHidDevice> Enumerate(string devicePath)
         {
-            return HidDevices.Enumerate(devicePath).
-                Select(d => d as IHidDevice);
+            return HidDevices.Enumerate(devicePath);
         }
 
         public IEnumerable<IHidDevice> Enumerate(int vendorId, params int[] productIds)
         {
-            return HidDevices.Enumerate(vendorId, productIds).
-                Select(d => d as IHidDevice);
+            return HidDevices.Enumerate(vendorId, productIds);
         }
 
         public IEnumerable<IHidDevice> Enumerate(int vendorId)
         {
-            return HidDevices.Enumerate(vendorId).
-                Select(d => d as IHidDevice);
+            return HidDevices.Enumerate(vendorId);
         }
     }
 }
