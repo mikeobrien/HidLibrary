@@ -49,8 +49,7 @@ namespace HidLibrary
             }
         }
 
-        public IntPtr ReadHandle { get; private set; }
-        public IntPtr WriteHandle { get; private set; }
+        public IntPtr Handle { get; private set; }
         public bool IsOpen { get; private set; }
         public bool IsConnected { get { return HidDevices.IsConnected(_devicePath); } }
         public string Description { get { return _description; } }
@@ -79,10 +78,10 @@ namespace HidLibrary
 
         public void OpenDevice()
         {
-            OpenDevice(DeviceMode.NonOverlapped, DeviceMode.NonOverlapped);
+            OpenDevice(DeviceMode.NonOverlapped, DeviceMode.NonOverlapped, ShareMode.ShareRead | ShareMode.ShareWrite);
         }
 
-        public void OpenDevice(DeviceMode readMode, DeviceMode writeMode)
+        public void OpenDevice(DeviceMode readMode, DeviceMode writeMode, ShareMode shareMode)
         {
             if (IsOpen) return;
 
@@ -91,8 +90,7 @@ namespace HidLibrary
 
             try
             {
-                ReadHandle = OpenDeviceIO(_devicePath, readMode, NativeMethods.GENERIC_READ);
-                WriteHandle = OpenDeviceIO(_devicePath, writeMode, NativeMethods.GENERIC_WRITE);
+                Handle = OpenDeviceIO(_devicePath, readMode, NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE, shareMode);
             }
             catch (Exception exception)
             {
@@ -100,15 +98,14 @@ namespace HidLibrary
                 throw new Exception("Error opening HID device.", exception);
             }
 
-            IsOpen = ReadHandle.ToInt32() != NativeMethods.INVALID_HANDLE_VALUE & WriteHandle.ToInt32() != NativeMethods.INVALID_HANDLE_VALUE;
+            IsOpen = IsOpen = Handle.ToInt32() != NativeMethods.INVALID_HANDLE_VALUE;
         }
 
 
         public void CloseDevice()
         {
             if (!IsOpen) return;
-            CloseDeviceIO(ReadHandle);
-            CloseDeviceIO(WriteHandle);
+            CloseDeviceIO(Handle);
             IsOpen = false;
         }
 
@@ -174,7 +171,10 @@ namespace HidLibrary
             bool success = false;
             try
             {
-                hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+                if (IsOpen)
+                    hidHandle = Handle;
+                else
+                    hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
                 success = NativeMethods.HidD_GetFeature(hidHandle, buffer, buffer.Length);
 
@@ -189,7 +189,7 @@ namespace HidLibrary
             }
             finally
             {
-                if (hidHandle != IntPtr.Zero)
+                if (hidHandle != IntPtr.Zero && hidHandle != Handle)
                     CloseDeviceIO(hidHandle);
             }
 
@@ -203,7 +203,10 @@ namespace HidLibrary
             bool success = false;
             try
             {
-                hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+                if (IsOpen)
+                    hidHandle = Handle;
+                else
+                    hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
                 success = NativeMethods.HidD_GetProductString(hidHandle, ref data[0], data.Length);
             }
@@ -213,7 +216,7 @@ namespace HidLibrary
             }
             finally
             {
-                if (hidHandle != IntPtr.Zero)
+                if (hidHandle != IntPtr.Zero && hidHandle != Handle)
                     CloseDeviceIO(hidHandle);
             }
 
@@ -227,7 +230,10 @@ namespace HidLibrary
             bool success = false;
             try
             {
-                hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+                if (IsOpen)
+                    hidHandle = Handle;
+                else
+                    hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
                 success = NativeMethods.HidD_GetManufacturerString(hidHandle, ref data[0], data.Length);
             }
@@ -237,7 +243,7 @@ namespace HidLibrary
             }
             finally
             {
-                if (hidHandle != IntPtr.Zero)
+                if (hidHandle != IntPtr.Zero && hidHandle != Handle)
                     CloseDeviceIO(hidHandle);
             }
 
@@ -251,7 +257,10 @@ namespace HidLibrary
             bool success = false;
             try
             {
-                hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+                if (IsOpen)
+                    hidHandle = Handle;
+                else
+                    hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
                 success = NativeMethods.HidD_GetSerialNumberString(hidHandle, ref data[0], data.Length);
             }
@@ -261,7 +270,7 @@ namespace HidLibrary
             }
             finally
             {
-                if (hidHandle != IntPtr.Zero)
+                if (hidHandle != IntPtr.Zero && hidHandle != Handle)
                     CloseDeviceIO(hidHandle);
             }
 
@@ -333,7 +342,10 @@ namespace HidLibrary
             bool success = false;
             try
             {
-                hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
+                if (IsOpen)
+                    hidHandle = Handle;
+                else
+                    hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
                 //var overlapped = new NativeOverlapped();
                 success = NativeMethods.HidD_SetFeature(hidHandle, buffer, buffer.Length);
@@ -344,9 +356,10 @@ namespace HidLibrary
             }
             finally
             {
-                if (hidHandle != IntPtr.Zero)
+                if (hidHandle != IntPtr.Zero && hidHandle != Handle)
                     CloseDeviceIO(hidHandle);
             }
+
             return success;
         }
 
@@ -457,7 +470,7 @@ namespace HidLibrary
 
                 try
                 {
-                    NativeMethods.WriteFile(WriteHandle, buffer, (uint)buffer.Length, out bytesWritten, ref overlapped);
+                    NativeMethods.WriteFile(Handle, buffer, (uint)buffer.Length, out bytesWritten, ref overlapped);
                 }
                 catch { return false; }
 
@@ -469,7 +482,7 @@ namespace HidLibrary
                 try
                 {
                     var overlapped = new NativeOverlapped();
-                    return NativeMethods.WriteFile(WriteHandle, buffer, (uint)buffer.Length, out bytesWritten, ref overlapped);
+                    return NativeMethods.WriteFile(Handle, buffer, (uint)buffer.Length, out bytesWritten, ref overlapped);
                 }
                 catch { return false; }
             }
@@ -502,7 +515,7 @@ namespace HidLibrary
 
                     try
                     {
-                        NativeMethods.ReadFile(ReadHandle, buffer, (uint)buffer.Length, out bytesRead, ref overlapped);
+                        NativeMethods.ReadFile(Handle, buffer, (uint)buffer.Length, out bytesRead, ref overlapped);
 
                         var result = NativeMethods.WaitForSingleObject(overlapped.EventHandle, overlapTimeout);
 
@@ -531,7 +544,7 @@ namespace HidLibrary
                     {
                         var overlapped = new NativeOverlapped();
 
-                        bool result = NativeMethods.ReadFile(ReadHandle, buffer, (uint)buffer.Length, out bytesRead, ref overlapped);
+                        bool result = NativeMethods.ReadFile(Handle, buffer, (uint)buffer.Length, out bytesRead, ref overlapped);
                         status = result ? HidDeviceData.ReadStatus.Success : HidDeviceData.ReadStatus.ReadError;
                     }
                     catch { status = HidDeviceData.ReadStatus.ReadError; }
@@ -548,10 +561,10 @@ namespace HidLibrary
 
         private static IntPtr OpenDeviceIO(string devicePath, uint deviceAccess)
         {
-            return OpenDeviceIO(devicePath, DeviceMode.NonOverlapped, deviceAccess);
+            return OpenDeviceIO(devicePath, DeviceMode.NonOverlapped, deviceAccess, ShareMode.ShareRead | ShareMode.ShareWrite);
         }
 
-        private static IntPtr OpenDeviceIO(string devicePath, DeviceMode deviceMode, uint deviceAccess)
+        private static IntPtr OpenDeviceIO(string devicePath, DeviceMode deviceMode, uint deviceAccess, ShareMode shareMode)
         {
             var security = new NativeMethods.SECURITY_ATTRIBUTES();
             var flags = 0;
@@ -562,7 +575,7 @@ namespace HidLibrary
             security.bInheritHandle = true;
             security.nLength = Marshal.SizeOf(security);
 
-            return NativeMethods.CreateFile(devicePath, deviceAccess, NativeMethods.FILE_SHARE_READ | NativeMethods.FILE_SHARE_WRITE, ref security, NativeMethods.OPEN_EXISTING, flags, 0);
+            return NativeMethods.CreateFile(devicePath, deviceAccess, (int)shareMode, ref security, NativeMethods.OPEN_EXISTING, flags, 0);
         }
 
         private static void CloseDeviceIO(IntPtr handle)

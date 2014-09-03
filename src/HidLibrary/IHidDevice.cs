@@ -14,6 +14,14 @@ namespace HidLibrary
         Overlapped = 1
     }
 
+    [Flags]
+    public enum ShareMode
+    {
+        Exclusive = 0,
+        ShareRead = NativeMethods.FILE_SHARE_READ,
+        ShareWrite = NativeMethods.FILE_SHARE_WRITE
+    }
+
     public delegate void ReadCallback(HidDeviceData data);
     public delegate void ReadReportCallback(HidReport report);
     public delegate void WriteCallback(bool success);
@@ -23,21 +31,20 @@ namespace HidLibrary
         event InsertedEventHandler Inserted;
         event RemovedEventHandler Removed;
 
-        IntPtr ReadHandle { get; }
-        IntPtr WriteHandle { get; }
+        IntPtr Handle { get; }
         bool IsOpen { get; }
         bool IsConnected { get; }
         string Description { get; }
         HidDeviceCapabilities Capabilities { get; }
-        HidDeviceAttributes Attributes { get;  }
+        HidDeviceAttributes Attributes { get; }
         string DevicePath { get; }
 
         bool MonitorDeviceEvents { get; set; }
 
         void OpenDevice();
 
-        void OpenDevice(DeviceMode readMode, DeviceMode writeMode);
-        
+        void OpenDevice(DeviceMode readMode, DeviceMode writeMode, ShareMode shareMode);
+
         void CloseDevice();
 
         HidDeviceData Read();
