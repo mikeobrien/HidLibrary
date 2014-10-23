@@ -20,5 +20,5 @@ Resources
 
 If your interested in HID development here are a few invaluable resources:  
   
-1. [Jan Axelson's USB Hid Programming Page](http://www.lvr.com/hidpage.htm) - Excellent resource for USB Hid development. Full code samples in a number of different languages demonstrate how to use the Windows setup and Hid API.  
-2. [Jan Axelson's book 'USB Complete'](http://www.lvr.com/usbc.htm) - Jan Axelson's guide to USB programming. Very good covereage of Hid. Must read for anyone new to Hid programming.
+1. [Jan Axelson's USB Hid Programming Page](http://janaxelson.com/hidpage.htm) - Excellent resource for USB Hid development. Full code samples in a number of different languages demonstrate how to use the Windows setup and Hid API.  
+2. [Jan Axelson's book 'USB Complete'](http://janaxelson.com/usbc.htm) - Jan Axelson's guide to USB programming. Very good covereage of Hid. Must read for anyone new to Hid programming.
