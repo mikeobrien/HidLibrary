@@ -3,6 +3,8 @@
 Hid Library
 =============
 
+[![Nuget](http://img.shields.io/nuget/v/HidLibrary.svg)](http://www.nuget.org/packages/HidLibrary/) [![Nuget downloads](http://img.shields.io/nuget/dt/HidLibrary.svg)](http://www.nuget.org/packages/HidLibrary/)
+
 This library enables you to enumerate and communicate with Hid compatible USB devices in .NET. It offers synchronous and asynchronous read and write functionality as well as notification of insertion and removal of a device. This library works on x86 and x64.
 
 Installation
