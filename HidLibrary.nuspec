@@ -16,7 +16,4 @@
       <iconUrl>https://github.com/mikeobrien/HidLibrary/raw/master/misc/logo.png</iconUrl>
       <tags>usb hid</tags>
    </metadata>
-   <files>
-      <file src="src\HidLibrary\bin\Release\HidLibrary.*" target="lib" />
-   </files>
 </package>
