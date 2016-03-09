@@ -17,6 +17,7 @@ namespace HidLibrary
         private readonly HidDeviceCapabilities _deviceCapabilities;
         private DeviceMode _deviceReadMode = DeviceMode.NonOverlapped;
         private DeviceMode _deviceWriteMode = DeviceMode.NonOverlapped;
+        private ShareMode _deviceShareMode = ShareMode.ShareRead | ShareMode.ShareWrite;
 
         private readonly HidDeviceEventMonitor _deviceEventMonitor;
 
@@ -88,6 +89,7 @@ namespace HidLibrary
 
             _deviceReadMode = readMode;
             _deviceWriteMode = writeMode;
+            _deviceShareMode = shareMode;
 
             try
             {
@@ -119,7 +121,7 @@ namespace HidLibrary
         {
             if (IsConnected)
             {
-                if (IsOpen == false) OpenDevice();
+                if (IsOpen == false) OpenDevice(_deviceReadMode, _deviceWriteMode, _deviceShareMode);
                 try
                 {
                     return ReadData(timeout);
@@ -311,7 +313,7 @@ namespace HidLibrary
         {
             if (IsConnected)
             {
-                if (IsOpen == false) OpenDevice();
+                if (IsOpen == false) OpenDevice(_deviceReadMode, _deviceWriteMode, _deviceShareMode);
                 try
                 {
                     return WriteData(data, timeout);
@@ -642,7 +644,7 @@ namespace HidLibrary
 
         private void DeviceEventMonitorInserted()
         {
-            if (IsOpen) OpenDevice();
+            if (!IsOpen) OpenDevice(_deviceReadMode, _deviceWriteMode, _deviceShareMode);
             if (Inserted != null) Inserted();
         }
 
