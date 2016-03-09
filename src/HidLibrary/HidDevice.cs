@@ -642,7 +642,7 @@ namespace HidLibrary
 
         private void DeviceEventMonitorInserted()
         {
-            if (IsOpen) OpenDevice();
+            if (!IsOpen) OpenDevice();
             if (Inserted != null) Inserted();
         }
 
