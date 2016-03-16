@@ -225,7 +225,7 @@ namespace HidLibrary
 
         public bool ReadProduct(out byte[] data)
         {
-            data = new byte[64];
+            data = new byte[254];
             IntPtr hidHandle = IntPtr.Zero;
             bool success = false;
             try
@@ -252,7 +252,7 @@ namespace HidLibrary
 
         public bool ReadManufacturer(out byte[] data)
         {
-            data = new byte[64];
+            data = new byte[254];
             IntPtr hidHandle = IntPtr.Zero;
             bool success = false;
             try
@@ -279,7 +279,7 @@ namespace HidLibrary
 
         public bool ReadSerialNumber(out byte[] data)
         {
-            data = new byte[64];
+            data = new byte[254];
             IntPtr hidHandle = IntPtr.Zero;
             bool success = false;
             try
