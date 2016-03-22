@@ -12,6 +12,13 @@ Installation
 
     PM> Install-Package hidlibrary
 	
+Contributors
+------------
+
+| [![Austin Mullins](https://avatars3.githubusercontent.com/u/199260?v=3&s=144)](https://github.com/amullins83) |
+|:---:|
+| [Austin Mullins](https://github.com/amullins83) |
+
 Props
 ------------
 
