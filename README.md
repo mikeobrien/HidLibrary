@@ -1,4 +1,4 @@
-<h3>NOTE: Support is VERY limited for this library. It is almost impossible to troubleshoot issues with so many devices and configurations. The community may be able to offer some assistance <i>but you will largely be on your own</i>. If you submit an issue, please include a relevant code snippet and details about you're operating system, .NET version and device. Pull requests are welcome and appreciated.</h3>
+<h3>NOTE: Support is VERY limited for this library. It is almost impossible to troubleshoot issues with so many devices and configurations. The community may be able to offer some assistance <i>but you will largely be on your own</i>. If you submit an issue, please include a relevant code snippet and details about your operating system, .NET version and device. Pull requests are welcome and appreciated.</h3>
 
 Hid Library
 =============
