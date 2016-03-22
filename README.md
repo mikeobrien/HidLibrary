@@ -1,4 +1,4 @@
-<h3>There has been quite a bit of interest in this little library over the years but unfortunately I'm not able to support it at this time. I'm also unable to answer questions about using it with different devices. So you're on your own if you decide to use it. Please feel free to fork it or send me a pull request if you would like to contribute.</h3>
+<h3>NOTE: Support is VERY limited for this library. It is almost impossible to troubleshoot issues with so many devices and configurations. The community may be able to offer some assistance <i>but you will largely be on your own</i>. If you submit an issue, please include a relevant code snippet and details about you're operating system, .NET version and device. Pull requests are welcome and appreciated.</h3>
 
 Hid Library
 =============
@@ -12,12 +12,12 @@ Installation
 
     PM> Install-Package hidlibrary
 	
-Contributors
+Developers
 ------------
 
-| [![Austin Mullins](https://avatars3.githubusercontent.com/u/199260?v=3&s=144)](https://github.com/amullins83) |
-|:---:|
-| [Austin Mullins](https://github.com/amullins83) |
+| [![Mike O'Brien](https://avatars3.githubusercontent.com/u/187817?v=3&s=144)](https://github.com/mikeobrien) |  [![Austin Mullins](https://avatars3.githubusercontent.com/u/199260?v=3&s=144)](https://github.com/amullins83) |
+|:---:|:---:|
+| [Mike O'Brien](https://github.com/mikeobrien) | [Austin Mullins](https://github.com/amullins83) |
 
 Props
 ------------
