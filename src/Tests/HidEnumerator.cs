@@ -1,20 +1,17 @@
-﻿using NUnit.Framework;
-using HidLibrary;
+﻿using Xunit;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Should;
 
-namespace Tests
+namespace HidLibrary.Tests
 {
-    [TestFixture]
     public class HidEnumeratorTests
     {
         private HidEnumerator enumerator;
         private string devicePath;
 
-        [SetUp]
-        public void beforeEach()
+        public void BeforeEach()
         {
             enumerator = new HidEnumerator();
             var firstDevice = enumerator.Enumerate().FirstOrDefault();
@@ -29,42 +26,47 @@ namespace Tests
             }
         }
 
-        [Test]
+        [Fact]
         public void CanConstruct()
         {
+            BeforeEach();
             enumerator.ShouldBeType(typeof(HidEnumerator));
         }
 
-        [Test]
+        [Fact]
         public void WrapsIsConnected()
         {
+            BeforeEach();
             bool enumIsConnected = enumerator.IsConnected(devicePath);
             bool hidIsConnected = HidDevices.IsConnected(devicePath);
             enumIsConnected.ShouldEqual(hidIsConnected);
         }
 
-        [Test]
+        [Fact]
         public void WrapsGetDevice()
         {
+            BeforeEach();
             IHidDevice enumDevice = enumerator.GetDevice(devicePath);
             IHidDevice hidDevice = HidDevices.GetDevice(devicePath);
             enumDevice.DevicePath.ShouldEqual(hidDevice.DevicePath);
         }
 
-        [Test]
+        [Fact]
         public void WrapsEnumerateDefault()
         {
+            BeforeEach();
             IEnumerable<IHidDevice> enumDevices = enumerator.Enumerate();
             IEnumerable<IHidDevice> hidDevices = HidDevices.Enumerate().
                 Select(d => d as IHidDevice);
 
             
-            allDevicesTheSame(enumDevices, hidDevices).ShouldBeTrue();
+            AllDevicesTheSame(enumDevices, hidDevices).ShouldBeTrue();
         }
 
-        [Test]
+        [Fact]
         public void WrapsEnumerateDevicePath()
         {
+            BeforeEach();
             IEnumerable<IHidDevice> enumDevices =
                 enumerator.Enumerate(devicePath);
             IEnumerable<IHidDevice> hidDevices =
@@ -72,13 +74,14 @@ namespace Tests
                     Select(d => d as IHidDevice);
 
 
-            allDevicesTheSame(enumDevices, hidDevices).ShouldBeTrue();
+            AllDevicesTheSame(enumDevices, hidDevices).ShouldBeTrue();
         }
 
-        [Test]
+        [Fact]
         public void WrapsEnumerateVendorId()
         {
-            int vid = getVid();
+            BeforeEach();
+            int vid = GetVid();
 
             IEnumerable<IHidDevice> enumDevices =
                 enumerator.Enumerate(vid);
@@ -87,14 +90,15 @@ namespace Tests
                     Select(d => d as IHidDevice);
 
 
-            allDevicesTheSame(enumDevices, hidDevices).ShouldBeTrue();
+            AllDevicesTheSame(enumDevices, hidDevices).ShouldBeTrue();
         }
 
-        [Test]
+        [Fact]
         public void WrapsEnumerateVendorIdProductId()
         {
-            int vid = getVid();
-            int pid = getPid();
+            BeforeEach();
+            int vid = GetVid();
+            int pid = GetPid();
 
             IEnumerable<IHidDevice> enumDevices =
                 enumerator.Enumerate(vid, pid);
@@ -103,11 +107,10 @@ namespace Tests
                     Select(d => d as IHidDevice);
 
 
-            allDevicesTheSame(enumDevices, hidDevices).ShouldBeTrue();
+            AllDevicesTheSame(enumDevices, hidDevices).ShouldBeTrue();
         }
 
-
-        private bool allDevicesTheSame(IEnumerable<IHidDevice> a,
+        private bool AllDevicesTheSame(IEnumerable<IHidDevice> a,
             IEnumerable<IHidDevice> b)
         {
             if(a.Count() != b.Count())
@@ -133,17 +136,17 @@ namespace Tests
             return allSame;
         }
 
-        private int getVid()
+        private int GetVid()
         {
-            return getNumberFromRegex("vid_([0-9a-f]{4})");
+            return GetNumberFromRegex("vid_([0-9a-f]{4})");
         }
 
-        private int getPid()
+        private int GetPid()
         {
-            return getNumberFromRegex("pid_([0-9a-f]{3,4})");
+            return GetNumberFromRegex("pid_([0-9a-f]{3,4})");
         }
 
-        private int getNumberFromRegex(string pattern)
+        private int GetNumberFromRegex(string pattern)
         {
             var match = Regex.Match(devicePath, pattern,
                 RegexOptions.IgnoreCase);

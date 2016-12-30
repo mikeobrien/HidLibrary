@@ -52,6 +52,7 @@
     <Compile Include="HidDeviceData.cs" />
     <Compile Include="HidDeviceEventMonitor.cs" />
     <Compile Include="HidFastReadDevice.cs" />
+    <Compile Include="HidFastReadEnumerator.cs" />
     <Compile Include="IHidEnumerator.cs" />
     <Compile Include="HidDevices.cs" />
     <Compile Include="HidReport.cs" />
