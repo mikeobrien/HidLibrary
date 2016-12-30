@@ -1,12 +1,11 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 using Should;
 
-namespace Tests
+namespace HidLibrary.Tests
 {
-    [TestFixture]
     public class Hid
     {
-        [Test]
+        [Fact]
         public void Get_Some_Tests_In_Here()
         {
             true.ShouldBeTrue();

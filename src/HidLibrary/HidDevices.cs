@@ -41,9 +41,9 @@ namespace HidLibrary
             return EnumerateDevices().Select(x => new HidDevice(x.Path, x.Description)).Where(x => x.Attributes.VendorId == vendorId);
         }
 
-        private class DeviceInfo { public string Path { get; set; } public string Description { get; set; } }
+        internal class DeviceInfo { public string Path { get; set; } public string Description { get; set; } }
 
-        private static IEnumerable<DeviceInfo> EnumerateDevices()
+        internal static IEnumerable<DeviceInfo> EnumerateDevices()
         {
             var devices = new List<DeviceInfo>();
             var hidClass = HidClassGuid;
