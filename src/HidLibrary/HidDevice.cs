@@ -112,6 +112,22 @@ namespace HidLibrary
             IsOpen = false;
         }
 
+        public byte[] GetInputReport(byte reportId, int bufferSize)
+        {
+            byte[] cmdBuffer = new byte[bufferSize];
+            cmdBuffer[0] = reportId;
+            NativeMethods.HidD_GetInputReport(Handle, cmdBuffer, cmdBuffer.Length);
+            return cmdBuffer;
+        }
+
+        public bool SetOutputReport(byte[] buffer)
+        {
+            if (null != buffer)
+                return (NativeMethods.HidD_SetOutputReport(Handle, buffer, buffer.Length));
+            else
+                throw new ArgumentException("The output buffer is null, it must be allocated before you call this method", "buffer");
+        }
+
         public HidDeviceData Read()
         {
             return Read(0);
