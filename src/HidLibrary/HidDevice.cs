@@ -181,6 +181,22 @@ namespace HidLibrary
             return await Task<HidReport>.Factory.FromAsync(readReportDelegate.BeginInvoke, readReportDelegate.EndInvoke, timeout, null);
         }
 
+        /// <summary>
+        /// Reads an input report from the Control channel.  This method provides access to report data for devices that 
+        /// do not use the interrupt channel to communicate for specific usages.
+        /// </summary>
+        /// <param name="reportId">The report ID to read from the device</param>
+        /// <returns>The HID report that is read.  The report will contain the success status of the read request</returns>
+        /// 
+        public HidReport ReadReportSync(byte reportId)
+        {
+            byte[] cmdBuffer = new byte[Capabilities.InputReportByteLength];
+            cmdBuffer[0] = reportId;
+            bool bSuccess = NativeMethods.HidD_GetInputReport(Handle, cmdBuffer, cmdBuffer.Length);
+            HidDeviceData deviceData = new HidDeviceData(cmdBuffer, bSuccess ? HidDeviceData.ReadStatus.Success : HidDeviceData.ReadStatus.NoDataRead);
+            return new HidReport(Capabilities.InputReportByteLength, deviceData);
+        }
+
         public bool ReadFeatureData(out byte[] data, byte reportId = 0)
         {
             if (_deviceCapabilities.FeatureReportByteLength <= 0)
@@ -364,6 +380,25 @@ namespace HidLibrary
             var writeReportDelegate = new WriteReportDelegate(WriteReport);
             var asyncState = new HidAsyncState(writeReportDelegate, callback);
             writeReportDelegate.BeginInvoke(report, timeout, EndWriteReport, asyncState);
+        }
+
+        /// <summary>
+        /// Handle data transfers on the control channel.  This method places data on the control channel for devices
+        /// that do not support the interupt transfers
+        /// </summary>
+        /// <param name="report">The outbound HID report</param>
+        /// <returns>The result of the tranfer request: true if successful otherwise false</returns>
+        /// 
+        public bool WriteReportSync(HidReport report)
+        {
+
+            if (null != report)
+            {
+                byte[] buffer = report.GetBytes();
+                return (NativeMethods.HidD_SetOutputReport(Handle, buffer, buffer.Length));
+            }
+            else
+                throw new ArgumentException("The output report is null, it must be allocated before you call this method", "report");
         }
 
         public async Task<bool> WriteReportAsync(HidReport report, int timeout = 0)
