@@ -41,7 +41,7 @@ gulp.task('test', ['build'], function () {
         }));
 });
 
-gulp.task('nuget-package', ['test'], function() {
+gulp.task('nuget-package', ['build'], function() {
 
     gulp.src('src/HidLibrary/bin/Release/HidLibrary.*')
         .pipe(gulp.dest('package/lib'));
