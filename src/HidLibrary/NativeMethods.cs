@@ -17,7 +17,7 @@ namespace HidLibrary
 	    internal const uint WAIT_OBJECT_0 = 0;
 	    internal const uint WAIT_FAILED = 0xffffffff;
 
-	    internal const int WAIT_INFINITE = 0xffff;
+        internal const int WAIT_INFINITE = -1;
 	    [StructLayout(LayoutKind.Sequential)]
 	    internal struct OVERLAPPED
 	    {
@@ -55,10 +55,13 @@ namespace HidLibrary
 	    static internal extern IntPtr CreateFile(string lpFileName, uint dwDesiredAccess, int dwShareMode, ref SECURITY_ATTRIBUTES lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, int hTemplateFile);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        static internal extern bool ReadFile(IntPtr hFile, [Out] byte[] lpBuffer, uint nNumberOfBytesToRead, out uint lpNumberOfBytesRead, [In] ref System.Threading.NativeOverlapped lpOverlapped);
+        static internal extern bool ReadFile(IntPtr hFile, IntPtr lpBuffer, uint nNumberOfBytesToRead, out uint lpNumberOfBytesRead, [In] ref System.Threading.NativeOverlapped lpOverlapped);
 
 	    [DllImport("kernel32.dll")]
 	    static internal extern uint WaitForSingleObject(IntPtr hHandle, int dwMilliseconds);
+		
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static internal extern bool GetOverlappedResult(IntPtr hFile, [In] ref System.Threading.NativeOverlapped lpOverlapped, out uint lpNumberOfBytesTransferred, bool bWait);
 
         [DllImport("kernel32.dll")]
         static internal extern bool WriteFile(IntPtr hFile, byte[] lpBuffer, uint nNumberOfBytesToWrite, out uint lpNumberOfBytesWritten, [In] ref System.Threading.NativeOverlapped lpOverlapped);
