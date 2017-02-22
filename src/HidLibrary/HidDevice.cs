@@ -587,12 +587,14 @@ namespace HidLibrary
         {
             var buffer = new byte[] { };
             var status = HidDeviceData.ReadStatus.NoDataRead;
+            IntPtr nonManagedBuffer;
 
             if (_deviceCapabilities.InputReportByteLength > 0)
             {
                 uint bytesRead = 0;
 
                 buffer = CreateInputBuffer();
+                nonManagedBuffer = Marshal.AllocHGlobal(buffer.Length);
 
                 if (_deviceReadMode == DeviceMode.Overlapped)
                 {
@@ -610,29 +612,38 @@ namespace HidLibrary
 
                     try
                     {
-                        NativeMethods.ReadFile(Handle, buffer, (uint)buffer.Length, out bytesRead, ref overlapped);
+                        var success = NativeMethods.ReadFile(Handle, nonManagedBuffer, (uint)buffer.Length, out bytesRead, ref overlapped);
 
-                        var result = NativeMethods.WaitForSingleObject(overlapped.EventHandle, overlapTimeout);
+                        if (!success) {
+                            var result = NativeMethods.WaitForSingleObject(overlapped.EventHandle, overlapTimeout);
 
-                        switch (result)
-                        {
-                            case NativeMethods.WAIT_OBJECT_0: status = HidDeviceData.ReadStatus.Success; break;
-                            case NativeMethods.WAIT_TIMEOUT:
-                                status = HidDeviceData.ReadStatus.WaitTimedOut;
-                                buffer = new byte[] { };
-                                break;
+                            switch (result) 
+                            {
+                                case NativeMethods.WAIT_OBJECT_0:
+                                    status = HidDeviceData.ReadStatus.Success;
+                                    NativeMethods.GetOverlappedResult(Handle, ref overlapped, out bytesRead, false);
+                                    break;
+                                case NativeMethods.WAIT_TIMEOUT:
+                                    status = HidDeviceData.ReadStatus.WaitTimedOut;
+                                    buffer = new byte[] { };
+                                    break;
                             case NativeMethods.WAIT_FAILED:
-                                status = HidDeviceData.ReadStatus.WaitFail;
-                                buffer = new byte[] { };
-                                break;
-                            default:
-                                status = HidDeviceData.ReadStatus.NoDataRead;
-                                buffer = new byte[] { };
-                                break;
+                                    status = HidDeviceData.ReadStatus.WaitFail;
+                                    buffer = new byte[] { };
+                                    break;
+                                default:
+                                    status = HidDeviceData.ReadStatus.NoDataRead;
+                                    buffer = new byte[] { };
+                                    break;
+                            }
                         }
+                        Marshal.Copy(nonManagedBuffer, buffer, 0, (int)bytesRead);
                     }
                     catch { status = HidDeviceData.ReadStatus.ReadError; }
-                    finally { CloseDeviceIO(overlapped.EventHandle); }
+                    finally {
+                        CloseDeviceIO(overlapped.EventHandle);
+                        Marshal.FreeHGlobal(nonManagedBuffer);
+                    }
                 }
                 else
                 {
@@ -640,10 +651,12 @@ namespace HidLibrary
                     {
                         var overlapped = new NativeOverlapped();
 
-                        NativeMethods.ReadFile(Handle, buffer, (uint)buffer.Length, out bytesRead, ref overlapped);
+                        NativeMethods.ReadFile(Handle, nonManagedBuffer, (uint)buffer.Length, out bytesRead, ref overlapped);
                         status = HidDeviceData.ReadStatus.Success;
+                        Marshal.Copy(nonManagedBuffer, buffer, 0, (int)bytesRead);
                     }
                     catch { status = HidDeviceData.ReadStatus.ReadError; }
+                    finally { Marshal.FreeHGlobal(nonManagedBuffer); }
                 }
             }
             return new HidDeviceData(buffer, status);
