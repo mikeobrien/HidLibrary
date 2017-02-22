@@ -18,6 +18,21 @@ Developers
 | [![Mike O'Brien](https://avatars3.githubusercontent.com/u/187817?v=3&s=144)](https://github.com/mikeobrien) |  [![Austin Mullins](https://avatars3.githubusercontent.com/u/199260?v=3&s=144)](https://github.com/amullins83) |
 |:---:|:---:|
 | [Mike O'Brien](https://github.com/mikeobrien) | [Austin Mullins](https://github.com/amullins83) |
+	
+Contributors
+------------
+
+| [![Benjamin Wegman](https://avatars0.githubusercontent.com/u/397523?v=3&s=144)](https://github.com/bwegman) |  [![jwelch222](https://raw.githubusercontent.com/mikeobrien/HidLibrary/master/misc/default-avatar.jpg)](https://github.com/jwelch222) | [![Thomas Hammer](https://avatars3.githubusercontent.com/u/1710917?v=3&s=144)](https://github.com/thammer) | [![juliansiebert](https://raw.githubusercontent.com/mikeobrien/HidLibrary/master/misc/default-avatar.jpg)](https://github.com/juliansiebert) | [![George Hahn](https://avatars3.githubusercontent.com/u/502747?v=3&s=144)](https://github.com/GeorgeHahn) | 
+|:---:|:---:|:---:|:---:|:---:|
+| [Benjamin Wegman](https://github.com/bwegman) | [jwelch222](https://github.com/jwelch222) | [Thomas Hammer](https://github.com/thammer) | [juliansiebert](https://github.com/juliansiebert) | [George Hahn](https://github.com/GeorgeHahn) | 
+
+| [![Rick van Lieshout](https://avatars3.githubusercontent.com/u/139665?v=3&s=144)](https://github.com/rvlieshout) | [![Paul Trandem](https://avatars2.githubusercontent.com/u/1494011?v=3&s=144)](https://github.com/ptrandem) | [![Neil Thiessen](https://avatars1.githubusercontent.com/u/2797902?v=3&s=144)](https://github.com/neilt6) | [![intrueder](https://avatars0.githubusercontent.com/u/182339?v=3&s=144)](https://github.com/intrueder) |  [![Bruno Juchli](https://avatars2.githubusercontent.com/u/2090172?v=3&s=144)](https://github.com/BrunoJuchli) 
+|:---:|:---:|:---:|:---:|:---:|
+| [Rick van Lieshout](https://github.com/rvlieshout) | [Paul Trandem](https://github.com/ptrandem) | [Neil Thiessen](https://github.com/neilt6) | [intrueder](https://github.com/intrueder) | [Bruno Juchli](https://github.com/BrunoJuchli) | 
+
+| [![sblakemore](https://raw.githubusercontent.com/mikeobrien/HidLibrary/master/misc/default-avatar.jpg)](https://github.com/sblakemore) | [![J.C](https://avatars3.githubusercontent.com/u/850854?v=3&s=144)](https://github.com/jcyuan) | [![Marek Roszko](https://raw.githubusercontent.com/mikeobrien/HidLibrary/master/misc/default-avatar.jpg)](https://github.com/marekr) |  [![Bill Prescott](https://avatars2.githubusercontent.com/u/3333408?v=3&s=144)](https://github.com/bprescott) | [![Ananth Racherla](https://avatars0.githubusercontent.com/u/14127511?v=3&s=144)](https://github.com/ananth-racherla) |
+|:---:|:---:|:---:|:---:|:---:|
+| [sblakemore](https://github.com/sblakemore) | [J.C](https://github.com/jcyuan) | [Marek Roszko](https://github.com/marekr) | [Bill Prescott](https://github.com/bprescott) | [Ananth Racherla](https://github.com/ananth-racherla) |
 
 Props
 ------------
