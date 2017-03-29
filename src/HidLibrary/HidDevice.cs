@@ -614,7 +614,12 @@ namespace HidLibrary
                     {
                         var success = NativeMethods.ReadFile(Handle, nonManagedBuffer, (uint)buffer.Length, out bytesRead, ref overlapped);
 
-                        if (!success) {
+                        if (success) 
+                        {
+                            status = HidDeviceData.ReadStatus.Success; // No check here to see if bytesRead > 0 . Perhaps not necessary?
+                        }
+                        else
+                        {
                             var result = NativeMethods.WaitForSingleObject(overlapped.EventHandle, overlapTimeout);
 
                             switch (result) 
