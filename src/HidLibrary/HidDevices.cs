@@ -112,6 +112,11 @@ namespace HidLibrary
                 return _hidClassGuid;
             }
         }
+        
+        public static void ChangeClassGuid(Guid g)
+        {
+            _hidClassGuid = g;
+        }
 
         private static string GetDeviceDescription(IntPtr deviceInfoSet, ref NativeMethods.SP_DEVINFO_DATA devinfoData)
         {
