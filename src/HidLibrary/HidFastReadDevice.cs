@@ -42,7 +42,11 @@ namespace HidLibrary
         public async Task<HidDeviceData> FastReadAsync(int timeout = 0)
         {
             var readDelegate = new ReadDelegate(FastRead);
+#if NET20
+            return await Task<HidDeviceData>.Factory.StartNew(() => readDelegate.Invoke(timeout));
+#else
             return await Task<HidDeviceData>.Factory.FromAsync(readDelegate.BeginInvoke, readDelegate.EndInvoke, timeout, null);
+#endif
         }
 
         public HidReport FastReadReport()
@@ -70,7 +74,11 @@ namespace HidLibrary
         public async Task<HidReport> FastReadReportAsync(int timeout = 0)
         {
             var readReportDelegate = new ReadReportDelegate(FastReadReport);
+#if NET20
+            return await Task<HidReport>.Factory.StartNew(() => readReportDelegate.Invoke(timeout));
+#else
             return await Task<HidReport>.Factory.FromAsync(readReportDelegate.BeginInvoke, readReportDelegate.EndInvoke, timeout, null);
+#endif
         }
     }
 }

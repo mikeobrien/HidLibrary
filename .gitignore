@@ -7,3 +7,4 @@ _ReSharper.*
 *.suo
 *.log
 .DS_Store
+.vs/
