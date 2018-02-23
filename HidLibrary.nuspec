@@ -19,10 +19,10 @@
         <group targetFramework="net20">
           <dependency id="Theraot.Core" version="1.0.3" />
         </group>
-		<group targetFramework="net35">
+        <group targetFramework="net35">
           <dependency id="Theraot.Core" version="1.0.3" />
         </group>
-		<group targetFramework="net40">
+        <group targetFramework="net40">
           <dependency id="Theraot.Core" version="1.0.3" />
         </group>
       </dependencies>
