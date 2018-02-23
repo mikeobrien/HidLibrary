@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HidLibrary</RootNamespace>
     <AssemblyName>HidLibrary</AssemblyName>
-    <TargetFrameworks>net20;net45</TargetFrameworks>
+    <TargetFrameworks>net20;net35;net40;net45</TargetFrameworks>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -40,15 +40,17 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net20' ">
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net45' ">
     <PackageReference Include="Theraot.Core" Version="1.0.3" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' != 'net20' ">
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net20' AND '$(TargetFramework)' != 'net35' ">
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>  
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
