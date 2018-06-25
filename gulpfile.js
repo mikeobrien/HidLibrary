@@ -26,7 +26,7 @@ gulp.task('build', ['assemblyInfo'], function() {
     return gulp
         .src('src/*.sln')
         .pipe(msbuild({
-            toolsVersion: 4.0,
+            toolsVersion: 'auto',
             targets: ['Clean', 'Build'],
             errorOnFail: true,
             stdout: true
@@ -43,7 +43,7 @@ gulp.task('test', ['build'], function () {
 
 gulp.task('nuget-package', ['build'], function() {
 
-    gulp.src('src/HidLibrary/bin/Release/HidLibrary.*')
+    gulp.src('src/HidLibrary/bin/Release/**/HidLibrary.*')
         .pipe(gulp.dest('package/lib'));
 
     return Nuget()

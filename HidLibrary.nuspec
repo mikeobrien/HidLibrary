@@ -15,5 +15,16 @@
       <summary>This library enables you to enumerate and communicate with Hid compatible USB devices in .NET.</summary>
       <iconUrl>https://github.com/mikeobrien/HidLibrary/raw/master/misc/logo.png</iconUrl>
       <tags>usb hid</tags>
+      <dependencies>
+        <group targetFramework="net20">
+          <dependency id="Theraot.Core" version="1.0.3" />
+        </group>
+        <group targetFramework="net35">
+          <dependency id="Theraot.Core" version="1.0.3" />
+        </group>
+        <group targetFramework="net40">
+          <dependency id="Theraot.Core" version="1.0.3" />
+        </group>
+      </dependencies>
    </metadata>
 </package>
