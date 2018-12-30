@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HidLibrary</RootNamespace>
     <AssemblyName>HidLibrary</AssemblyName>
-    <TargetFrameworks>net20;net35;net40;net45</TargetFrameworks>
+    <TargetFrameworks>net20;net35;net40;net45;netstandard2</TargetFrameworks>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -35,20 +35,20 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard2' ">
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net45' AND '$(TargetFramework)' != 'netstandard2' ">
     <PackageReference Include="Theraot.Core" Version="1.0.3" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net20' ">
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net20' AND '$(TargetFramework)' != 'netstandard2' ">
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net20' AND '$(TargetFramework)' != 'net35' ">
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net20' AND '$(TargetFramework)' != 'net35' AND '$(TargetFramework)' != 'netstandard2' ">
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>  
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
