@@ -14,6 +14,16 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+    <PackageId>hidlibrary</PackageId>
+    <PackageVersion>3.2.49</PackageVersion>
+    <Title>Hid Library</Title>
+    <authors>Mike O'Brien</authors>
+    <Description>This library enables you to enumerate and communicate with Hid compatible USB devices in .NET.</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/mikeobrien/HidLibrary</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/mikeobrien/HidLibrary/raw/master/misc/logo.png</PackageIconUrl>
+    <PackageTags>usb hid</PackageTags>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,6 +45,9 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath=""/>
+  </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard2' ">
     <Reference Include="System" />
     <Reference Include="System.Data" />
