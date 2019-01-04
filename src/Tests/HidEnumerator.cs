@@ -11,7 +11,7 @@ namespace HidLibrary.Tests
         private HidEnumerator enumerator;
         private string devicePath;
 
-        public void BeforeEach()
+        private void BeforeEach()
         {
             enumerator = new HidEnumerator();
             var firstDevice = enumerator.Enumerate().FirstOrDefault();

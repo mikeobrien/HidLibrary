@@ -13,7 +13,7 @@
             private HidFastReadEnumerator enumerator;
             private string devicePath;
             
-            public void BeforeEach()
+            private void BeforeEach()
             {
                 enumerator = new HidFastReadEnumerator();
                 var firstDevice = enumerator.Enumerate().FirstOrDefault();
