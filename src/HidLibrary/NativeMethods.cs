@@ -48,10 +48,10 @@ namespace HidLibrary
         [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Auto)]
         static internal extern bool CancelSynchronousIo(IntPtr hObject);
 
-	    [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+	    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
 	    static internal extern IntPtr CreateEvent(ref SECURITY_ATTRIBUTES securityAttributes, int bManualReset, int bInitialState, string lpName);
 
-	    [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+	    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
 	    static internal extern IntPtr CreateFile(string lpFileName, uint dwDesiredAccess, int dwShareMode, ref SECURITY_ATTRIBUTES lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, int hTemplateFile);
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -209,7 +209,7 @@ namespace HidLibrary
 	    [DllImport("setupapi.dll")]
         static internal extern bool SetupDiEnumDeviceInterfaces(IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, ref Guid interfaceClassGuid, int memberIndex, ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData);
 
-	    [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
+	    [DllImport("setupapi.dll", CharSet = CharSet.Unicode)]
         static internal extern IntPtr SetupDiGetClassDevs(ref System.Guid classGuid, string enumerator, int hwndParent, int flags);
 
         [DllImport("setupapi.dll", CharSet = CharSet.Auto, EntryPoint = "SetupDiGetDeviceInterfaceDetail")]
