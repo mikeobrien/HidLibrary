@@ -51,7 +51,8 @@ namespace HidLibrary
             }
         }
 
-        public IntPtr Handle { get; private set; }
+        public IntPtr ReadHandle { get; private set; }
+        public IntPtr WriteHandle { get; private set; }
         public bool IsOpen { get; private set; }
         public bool IsConnected { get { return HidDevices.IsConnected(_devicePath); } }
         public string Description { get { return _description; } }
@@ -93,7 +94,8 @@ namespace HidLibrary
 
             try
             {
-                Handle = OpenDeviceIO(_devicePath, readMode, NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE, shareMode);
+                ReadHandle = OpenDeviceIO(_devicePath, readMode, NativeMethods.GENERIC_READ, shareMode);
+                WriteHandle = OpenDeviceIO(_devicePath, writeMode, NativeMethods.GENERIC_WRITE, shareMode);
             }
             catch (Exception exception)
             {
@@ -101,14 +103,16 @@ namespace HidLibrary
                 throw new Exception("Error opening HID device.", exception);
             }
 
-            IsOpen = Handle.ToInt32() != NativeMethods.INVALID_HANDLE_VALUE;
+            IsOpen = (ReadHandle.ToInt32() != NativeMethods.INVALID_HANDLE_VALUE &&
+                        WriteHandle.ToInt32() != NativeMethods.INVALID_HANDLE_VALUE);
         }
 
 
         public void CloseDevice()
         {
             if (!IsOpen) return;
-            CloseDeviceIO(Handle);
+            CloseDeviceIO(ReadHandle);
+            CloseDeviceIO(WriteHandle);
             IsOpen = false;
         }
 
@@ -200,7 +204,7 @@ namespace HidLibrary
         {
             byte[] cmdBuffer = new byte[Capabilities.InputReportByteLength];
             cmdBuffer[0] = reportId;
-            bool bSuccess = NativeMethods.HidD_GetInputReport(Handle, cmdBuffer, cmdBuffer.Length);
+            bool bSuccess = NativeMethods.HidD_GetInputReport(ReadHandle, cmdBuffer, cmdBuffer.Length);
             HidDeviceData deviceData = new HidDeviceData(cmdBuffer, bSuccess ? HidDeviceData.ReadStatus.Success : HidDeviceData.ReadStatus.NoDataRead);
             return new HidReport(Capabilities.InputReportByteLength, deviceData);
         }
@@ -223,7 +227,7 @@ namespace HidLibrary
             try
             {
                 if (IsOpen)
-                    hidHandle = Handle;
+                    hidHandle = ReadHandle;
                 else
                     hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
@@ -240,7 +244,7 @@ namespace HidLibrary
             }
             finally
             {
-                if (hidHandle != IntPtr.Zero && hidHandle != Handle)
+                if (hidHandle != IntPtr.Zero && hidHandle != ReadHandle)
                     CloseDeviceIO(hidHandle);
             }
 
@@ -255,7 +259,7 @@ namespace HidLibrary
             try
             {
                 if (IsOpen)
-                    hidHandle = Handle;
+                    hidHandle = ReadHandle;
                 else
                     hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
@@ -267,7 +271,7 @@ namespace HidLibrary
             }
             finally
             {
-                if (hidHandle != IntPtr.Zero && hidHandle != Handle)
+                if (hidHandle != IntPtr.Zero && hidHandle != ReadHandle)
                     CloseDeviceIO(hidHandle);
             }
 
@@ -282,7 +286,7 @@ namespace HidLibrary
             try
             {
                 if (IsOpen)
-                    hidHandle = Handle;
+                    hidHandle = ReadHandle;
                 else
                     hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
@@ -294,7 +298,7 @@ namespace HidLibrary
             }
             finally
             {
-                if (hidHandle != IntPtr.Zero && hidHandle != Handle)
+                if (hidHandle != IntPtr.Zero && hidHandle != ReadHandle)
                     CloseDeviceIO(hidHandle);
             }
 
@@ -309,7 +313,7 @@ namespace HidLibrary
             try
             {
                 if (IsOpen)
-                    hidHandle = Handle;
+                    hidHandle = ReadHandle;
                 else
                     hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
@@ -321,7 +325,7 @@ namespace HidLibrary
             }
             finally
             {
-                if (hidHandle != IntPtr.Zero && hidHandle != Handle)
+                if (hidHandle != IntPtr.Zero && hidHandle != ReadHandle)
                     CloseDeviceIO(hidHandle);
             }
 
@@ -407,7 +411,7 @@ namespace HidLibrary
             if (null != report)
             {
                 byte[] buffer = report.GetBytes();
-                return (NativeMethods.HidD_SetOutputReport(Handle, buffer, buffer.Length));
+                return (NativeMethods.HidD_SetOutputReport(WriteHandle, buffer, buffer.Length));
             }
             else
                 throw new ArgumentException("The output report is null, it must be allocated before you call this method", "report");
@@ -442,7 +446,7 @@ namespace HidLibrary
             try
             {
                 if (IsOpen)
-                    hidHandle = Handle;
+                    hidHandle = WriteHandle;
                 else
                     hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
@@ -455,7 +459,7 @@ namespace HidLibrary
             }
             finally
             {
-                if (hidHandle != IntPtr.Zero && hidHandle != Handle)
+                if (hidHandle != IntPtr.Zero && hidHandle != WriteHandle)
                     CloseDeviceIO(hidHandle);
             }
             return success;
@@ -570,7 +574,7 @@ namespace HidLibrary
 
                 try
                 {
-                    NativeMethods.WriteFile(Handle, buffer, (uint)buffer.Length, out bytesWritten, ref overlapped);
+                    NativeMethods.WriteFile(WriteHandle, buffer, (uint)buffer.Length, out bytesWritten, ref overlapped);
                 }
                 catch { return false; }
 
@@ -593,7 +597,7 @@ namespace HidLibrary
                 try
                 {
                     var overlapped = new NativeOverlapped();
-                    return NativeMethods.WriteFile(Handle, buffer, (uint)buffer.Length, out bytesWritten, ref overlapped);
+                    return NativeMethods.WriteFile(WriteHandle, buffer, (uint)buffer.Length, out bytesWritten, ref overlapped);
                 }
                 catch { return false; }
             }
@@ -628,7 +632,7 @@ namespace HidLibrary
 
                     try
                     {
-                        var success = NativeMethods.ReadFile(Handle, nonManagedBuffer, (uint)buffer.Length, out bytesRead, ref overlapped);
+                        var success = NativeMethods.ReadFile(ReadHandle, nonManagedBuffer, (uint)buffer.Length, out bytesRead, ref overlapped);
 
                         if (success) 
                         {
@@ -642,7 +646,7 @@ namespace HidLibrary
                             {
                                 case NativeMethods.WAIT_OBJECT_0:
                                     status = HidDeviceData.ReadStatus.Success;
-                                    NativeMethods.GetOverlappedResult(Handle, ref overlapped, out bytesRead, false);
+                                    NativeMethods.GetOverlappedResult(ReadHandle, ref overlapped, out bytesRead, false);
                                     break;
                                 case NativeMethods.WAIT_TIMEOUT:
                                     status = HidDeviceData.ReadStatus.WaitTimedOut;
@@ -672,7 +676,7 @@ namespace HidLibrary
                     {
                         var overlapped = new NativeOverlapped();
 
-                        NativeMethods.ReadFile(Handle, nonManagedBuffer, (uint)buffer.Length, out bytesRead, ref overlapped);
+                        NativeMethods.ReadFile(ReadHandle, nonManagedBuffer, (uint)buffer.Length, out bytesRead, ref overlapped);
                         status = HidDeviceData.ReadStatus.Success;
                         Marshal.Copy(nonManagedBuffer, buffer, 0, (int)bytesRead);
                     }
