@@ -8,3 +8,7 @@ _ReSharper.*
 *.log
 .DS_Store
 .vs/
+**/packages/*
+!**/packages/repositories.config
+.cache
+node_modules
