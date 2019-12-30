@@ -1,0 +1,99 @@
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  Version.MajorMinor: '3.3'
+  Version.Semantic: $[format('{0}.{1}', variables['Version.MajorMinor'],
+    counter(variables['Version.MajorMinor'], 0))]
+  Version.Assembly: '$(Version.Semantic).0'
+  Year: $[format('{0:yyyy}', Pipeline.StartTime)]
+
+jobs:
+- job: Build
+  steps:
+    - task: Assembly-Info-NetFramework@2
+      inputs:
+        Path: '$(Build.SourcesDirectory)'
+        FileNames: 'src/HidLibrary/Properties/AssemblyInfo.cs'
+        InsertAttributes: false
+        FileEncoding: 'auto'
+        WriteBOM: false
+        Title: 'Hid Library'
+        Product: 'Hid Library'
+        Description: 'Hid Device Communication Library'
+        Company: 'Ultraviolet Catastrophe'
+        Copyright: 'Copyright © $(Year) Ultraviolet Catastrophe'
+        Trademark: 'Hid Library'
+        VersionNumber: '$(Version.Assembly)'
+        FileVersionNumber: '$(Version.Assembly)'
+        InformationalVersion: '$(Version.Assembly)'
+        LogLevel: 'verbose'
+        FailOnWarning: false
+        Configuration: 'Release'
+
+    - task: NuGetCommand@2
+      inputs:
+        command: 'restore'
+        feedsToUse: 'select'
+        restoreSolution: 'src/HidLibrary.sln'
+
+    - task: MSBuild@1
+      inputs:
+        solution: 'src/HidLibrary.sln'
+        configuration: 'Release'
+        clean: true
+
+    - task: VSTest@2
+      inputs:
+        testSelector: 'testAssemblies'
+        testAssemblyVer2: |
+          src/Tests/bin/Release/Tests.dll
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+
+    - task: NuGetCommand@2
+      inputs:
+        command: 'pack'
+        packagesToPack: 'HidLibrary.nuspec'
+        packDestination: '$(Build.ArtifactStagingDirectory)/packages'
+        buildProperties: 'version=$(Version.Semantic)'
+        basePath: src/HidLibrary/bin/Release
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)/packages'
+        artifactName: packages
+
+- job: Deploy
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  steps:
+    - checkout: self
+      persistCredentials: true
+      clean: true
+
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'packages'
+        downloadPath: '$(System.ArtifactsDirectory)'
+    - task: NuGetCommand@2
+      inputs:
+        command: 'push'
+        packagesToPush: '$(System.ArtifactsDirectory)/packages/*.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'Nuget.org'
+
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          git tag $(Version.Semantic)
+          Write-Host "Successfully created tag $(Version.Semantic)" 
+
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          git push --tags
+          Write-Host "Successfully pushed tag $(Version.Semantic) to origin"     

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-   <metadata>
+    <metadata>
       <id>hidlibrary</id>
-      <version>0.0.0.0</version>
+      <version>$version$</version>
       <title>Hid Library</title>
       <authors>Mike O'Brien</authors>
       <description>This library enables you to enumerate and communicate with Hid compatible USB devices in .NET.</description>
@@ -26,5 +26,11 @@
           <dependency id="Theraot.Core" version="1.0.3" />
         </group>
       </dependencies>
-   </metadata>
+    </metadata>
+    <files>
+      <file src="net20\HidLibrary.*" target="lib\net20" exclude="*.xml" />
+      <file src="net35\HidLibrary.*" target="lib\net35" exclude="*.xml" />
+      <file src="net40\HidLibrary.*" target="lib\net40" exclude="*.xml" />
+      <file src="net45\HidLibrary.*" target="lib\net45" exclude="*.xml" />
+    </files>
 </package>
