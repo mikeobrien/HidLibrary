@@ -14,7 +14,7 @@ jobs:
     - task: Assembly-Info-NetFramework@2
       inputs:
         Path: '$(Build.SourcesDirectory)'
-        FileNames: 'src\HidLibrary\Properties\AssemblyInfo.cs'
+        FileNames: 'src/HidLibrary/Properties/AssemblyInfo.cs'
         InsertAttributes: false
         FileEncoding: 'auto'
         WriteBOM: false
@@ -35,11 +35,11 @@ jobs:
       inputs:
         command: 'restore'
         feedsToUse: 'select'
-        restoreSolution: 'src\HidLibrary.sln'
+        restoreSolution: 'src/HidLibrary.sln'
 
     - task: MSBuild@1
       inputs:
-        solution: 'src\HidLibrary.sln'
+        solution: 'src/HidLibrary.sln'
         configuration: 'Release'
         clean: true
 
@@ -47,7 +47,7 @@ jobs:
       inputs:
         testSelector: 'testAssemblies'
         testAssemblyVer2: |
-          src\Tests\bin\Release\Tests.dll
+          src/Tests/bin/Release/Tests.dll
         searchFolder: '$(System.DefaultWorkingDirectory)'
 
     - task: NuGetCommand@2
@@ -56,7 +56,7 @@ jobs:
         packagesToPack: 'HidLibrary.nuspec'
         packDestination: '$(Build.ArtifactStagingDirectory)/packages'
         buildProperties: 'version=$(Version.Semantic)'
-        basePath: src\HidLibrary\bin\Release
+        basePath: src/HidLibrary/bin/Release
 
     - task: PublishBuildArtifacts@1
       inputs:
@@ -65,8 +65,15 @@ jobs:
 
 - job: Deploy
   dependsOn: Build
-  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  condition: succeeded()
+  #condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
   steps:
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'packages'
+        downloadPath: '$(System.ArtifactsDirectory)'
     - task: NuGetCommand@2
       inputs:
         command: 'push'
