@@ -68,7 +68,9 @@ jobs:
   condition: succeeded()
   #condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
   steps:
-    - persistCredentials: true
+    - checkout: self
+      persistCredentials: true
+      clean: true
 
     - task: DownloadBuildArtifacts@0
       inputs:
