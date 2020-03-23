@@ -10,10 +10,20 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HidLibrary</RootNamespace>
     <AssemblyName>HidLibrary</AssemblyName>
-    <TargetFrameworks>net20;net35;net40;net45</TargetFrameworks>
+    <TargetFrameworks>net20;net35;net40;net45;netstandard2</TargetFrameworks>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+    <PackageId>hidlibrary</PackageId>
+    <PackageVersion>3.2.49</PackageVersion>
+    <Title>Hid Library</Title>
+    <authors>Mike O'Brien</authors>
+    <Description>This library enables you to enumerate and communicate with Hid compatible USB devices in .NET.</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/mikeobrien/HidLibrary</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/mikeobrien/HidLibrary/raw/master/misc/logo.png</PackageIconUrl>
+    <PackageTags>usb hid</PackageTags>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,19 +46,22 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath=""/>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard2' ">
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net45' AND '$(TargetFramework)' != 'netstandard2' ">
     <PackageReference Include="Theraot.Core" Version="1.0.3" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net20' ">
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net20' AND '$(TargetFramework)' != 'netstandard2' ">
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net20' AND '$(TargetFramework)' != 'net35' ">
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net20' AND '$(TargetFramework)' != 'net35' AND '$(TargetFramework)' != 'netstandard2' ">
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>  
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
