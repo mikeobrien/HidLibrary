@@ -36,6 +36,20 @@ namespace HidLibrary
                                                                                   productIds.Contains(x.Attributes.ProductId));
         }
 
+        public static IEnumerable<HidDevice> Enumerate(unit.Tuple_VidPid[] vidpids)
+        {
+            var Devices = EnumerateDevices().Select(x => new HidDevice(x.Path, x.Description));
+            List<HidDevice> temp = new List<HidDevice>();
+            foreach (var d in Devices)
+            {
+                if (vidpids.Where(x => x.VendorId == d.Attributes.VendorId && x.ProductId == d.Attributes.ProductId).Any())
+                {
+                    temp.Add(d);
+                }
+            }
+            return temp;
+        }
+
         public static IEnumerable<HidDevice> Enumerate(int vendorId, int productId, ushort UsagePage)
         {
             return EnumerateDevices().Select(x => new HidDevice(x.Path, x.Description)).Where(x => x.Attributes.VendorId == vendorId &&
