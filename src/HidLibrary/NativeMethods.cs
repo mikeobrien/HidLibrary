@@ -118,7 +118,7 @@ namespace HidLibrary
         internal struct DEVPROPKEY
         {
             public Guid fmtid;
-            public ulong pid;
+            public uint pid;
         }
 
         internal static DEVPROPKEY DEVPKEY_Device_BusReportedDeviceDesc = 
