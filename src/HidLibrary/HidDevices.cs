@@ -137,7 +137,7 @@ namespace HidLibrary
 
             if (Environment.OSVersion.Version.Major > 5)
             {
-                ulong propertyType = 0;
+                uint propertyType = 0;
                 var requiredSize = 0;
 
                 var _continue = NativeMethods.SetupDiGetDeviceProperty(deviceInfoSet,
