@@ -52,7 +52,7 @@ namespace HidLibrary
         {
             var devices = new List<DeviceInfo>();
             var hidClass = HidClassGuid;
-            var deviceInfoSet = NativeMethods.SetupDiGetClassDevs(ref hidClass, null, 0, NativeMethods.DIGCF_PRESENT | NativeMethods.DIGCF_DEVICEINTERFACE);
+            var deviceInfoSet = NativeMethods.SetupDiGetClassDevs(ref hidClass, null, hwndParent: IntPtr.Zero, NativeMethods.DIGCF_PRESENT | NativeMethods.DIGCF_DEVICEINTERFACE);
 
             if (deviceInfoSet.ToInt64() != NativeMethods.INVALID_HANDLE_VALUE)
             {
@@ -137,7 +137,7 @@ namespace HidLibrary
 
             if (Environment.OSVersion.Version.Major > 5)
             {
-                ulong propertyType = 0;
+                uint propertyType = 0;
                 var requiredSize = 0;
 
                 var _continue = NativeMethods.SetupDiGetDeviceProperty(deviceInfoSet,

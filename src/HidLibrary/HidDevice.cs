@@ -703,7 +703,7 @@ namespace HidLibrary
             security.bInheritHandle = true;
             security.nLength = Marshal.SizeOf(security);
 
-            return NativeMethods.CreateFile(devicePath, deviceAccess, (int)shareMode, ref security, NativeMethods.OPEN_EXISTING, flags, 0);
+            return NativeMethods.CreateFile(devicePath, deviceAccess, (int)shareMode, ref security, NativeMethods.OPEN_EXISTING, flags, hTemplateFile: IntPtr.Zero);
         }
 
         private static void CloseDeviceIO(IntPtr handle)
