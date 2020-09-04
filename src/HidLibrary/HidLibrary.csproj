@@ -2,12 +2,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>net20;net35;net40;net45;netstandard2</TargetFrameworks>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
+    <Version>3.2.49</Version>
+    <Company>Ultraviolet Catastrophe</Company>
+    <Copyright>Copyright © 2011 Ultraviolet Catastrophe</Copyright>
     <PackageId>hidlibrary</PackageId>
-    <PackageVersion>3.2.49</PackageVersion>
     <Title>Hid Library</Title>
-    <authors>Mike O'Brien</authors>
+    <Authors>Mike O'Brien</Authors>
     <Description>This library enables you to enumerate and communicate with Hid compatible USB devices in .NET.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/mikeobrien/HidLibrary</PackageProjectUrl>
