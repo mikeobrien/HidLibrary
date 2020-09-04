@@ -123,15 +123,18 @@ namespace HidLibrary
                 var requiredSize = 0;
                 var type = 0;
 
-                NativeMethods.SetupDiGetDeviceRegistryProperty(deviceInfoSet,
+                if (NativeMethods.SetupDiGetDeviceRegistryProperty(deviceInfoSet,
                     ref devinfoData,
                     NativeMethods.SPDRP_DEVICEDESC,
                     ref type,
                     descriptionBuffer,
                     propertyBufferSize: charCount * sizeof(char),
-                    ref requiredSize);
+                    ref requiredSize))
+                {
+                    return new string(descriptionBuffer);
+                }
 
-                return new string(descriptionBuffer);
+                return null;
             }
         }
 
@@ -147,16 +150,17 @@ namespace HidLibrary
                     uint propertyType = 0;
                     var requiredSize = 0;
 
-                    var _continue = NativeMethods.SetupDiGetDeviceProperty(deviceInfoSet,
+                    if (NativeMethods.SetupDiGetDeviceProperty(deviceInfoSet,
                         ref devinfoData,
                         ref NativeMethods.DEVPKEY_Device_BusReportedDeviceDesc,
                         ref propertyType,
                         descriptionBuffer,
                         propertyBufferSize: charCount * sizeof(char),
                         ref requiredSize,
-                        0);
-
-                    if (_continue) return new string(descriptionBuffer);
+                        0))
+                    {
+                        return new string(descriptionBuffer);
+                    }
                 }
 
                 return null;
