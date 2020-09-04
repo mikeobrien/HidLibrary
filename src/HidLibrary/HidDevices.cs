@@ -128,7 +128,7 @@ namespace HidLibrary
                                                             descriptionBuffer.Length,
                                                             ref requiredSize);
 
-            return descriptionBuffer.ToUTF8String();
+            return descriptionBuffer.ToUTF16String();
         }
 
         private static string GetBusReportedDeviceDescription(IntPtr deviceInfoSet, ref NativeMethods.SP_DEVINFO_DATA devinfoData)
