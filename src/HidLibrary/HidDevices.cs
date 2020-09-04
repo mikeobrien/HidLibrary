@@ -115,43 +115,52 @@ namespace HidLibrary
 
         private static string GetDeviceDescription(IntPtr deviceInfoSet, ref NativeMethods.SP_DEVINFO_DATA devinfoData)
         {
-            var descriptionBuffer = new byte[1024];
+            unsafe
+            {
+                const int charCount = 1024;
+                var descriptionBuffer = stackalloc char[charCount];
 
-            var requiredSize = 0;
-            var type = 0;
+                var requiredSize = 0;
+                var type = 0;
 
-            NativeMethods.SetupDiGetDeviceRegistryProperty(deviceInfoSet,
-                                                            ref devinfoData,
-                                                            NativeMethods.SPDRP_DEVICEDESC,
-                                                            ref type,
-                                                            descriptionBuffer,
-                                                            descriptionBuffer.Length,
-                                                            ref requiredSize);
+                NativeMethods.SetupDiGetDeviceRegistryProperty(deviceInfoSet,
+                    ref devinfoData,
+                    NativeMethods.SPDRP_DEVICEDESC,
+                    ref type,
+                    descriptionBuffer,
+                    propertyBufferSize: charCount * sizeof(char),
+                    ref requiredSize);
 
-            return descriptionBuffer.ToUTF16String();
+                return new string(descriptionBuffer);
+            }
         }
 
         private static string GetBusReportedDeviceDescription(IntPtr deviceInfoSet, ref NativeMethods.SP_DEVINFO_DATA devinfoData)
         {
-            var descriptionBuffer = new byte[1024];
-
-            if (Environment.OSVersion.Version.Major > 5)
+            unsafe
             {
-                uint propertyType = 0;
-                var requiredSize = 0;
+                const int charCount = 1024;
+                var descriptionBuffer = stackalloc char[charCount];
 
-                var _continue = NativeMethods.SetupDiGetDeviceProperty(deviceInfoSet,
-                                                                        ref devinfoData,
-                                                                        ref NativeMethods.DEVPKEY_Device_BusReportedDeviceDesc,
-                                                                        ref propertyType,
-                                                                        descriptionBuffer,
-                                                                        descriptionBuffer.Length,
-                                                                        ref requiredSize,
-                                                                        0);
+                if (Environment.OSVersion.Version.Major > 5)
+                {
+                    uint propertyType = 0;
+                    var requiredSize = 0;
 
-                if (_continue) return descriptionBuffer.ToUTF16String();
+                    var _continue = NativeMethods.SetupDiGetDeviceProperty(deviceInfoSet,
+                        ref devinfoData,
+                        ref NativeMethods.DEVPKEY_Device_BusReportedDeviceDesc,
+                        ref propertyType,
+                        descriptionBuffer,
+                        propertyBufferSize: charCount * sizeof(char),
+                        ref requiredSize,
+                        0);
+
+                    if (_continue) return new string(descriptionBuffer);
+                }
+
+                return null;
             }
-            return null;
         }
     }
 }
