@@ -12,12 +12,13 @@
     <Description>This library enables you to enumerate and communicate with Hid compatible USB devices in .NET.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/mikeobrien/HidLibrary</PackageProjectUrl>
-    <PackageIconUrl>https://github.com/mikeobrien/HidLibrary/raw/master/misc/logo.png</PackageIconUrl>
+    <PackageIcon>logo.png</PackageIcon>
     <PackageTags>usb hid</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\LICENSE" Pack="true" PackagePath=""/>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
+    <None Include="..\..\misc\logo.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' != 'net45' AND '$(TargetFramework)' != 'netstandard2' ">
