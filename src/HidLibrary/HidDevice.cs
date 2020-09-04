@@ -553,7 +553,7 @@ namespace HidLibrary
             if (_deviceCapabilities.OutputReportByteLength <= 0) return false;
 
             var buffer = CreateOutputBuffer();
-            uint bytesWritten = 0;
+            uint bytesWritten;
 
             Array.Copy(data, 0, buffer, 0, Math.Min(data.Length, _deviceCapabilities.OutputReportByteLength));
 
@@ -611,7 +611,7 @@ namespace HidLibrary
 
             if (_deviceCapabilities.InputReportByteLength > 0)
             {
-                uint bytesRead = 0;
+                uint bytesRead;
 
                 buffer = CreateInputBuffer();
                 nonManagedBuffer = Marshal.AllocHGlobal(buffer.Length);
