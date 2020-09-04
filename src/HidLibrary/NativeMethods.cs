@@ -27,10 +27,10 @@ namespace HidLibrary
 		    public bool bInheritHandle;
 	    }
 
-        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Auto)]
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Unicode)]
         static internal extern bool CancelIoEx(IntPtr hFile, IntPtr lpOverlapped);
 
-	    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Auto)]
+	    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Unicode)]
 	    static internal extern bool CloseHandle(IntPtr hObject);
 
 	    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
@@ -106,7 +106,7 @@ namespace HidLibrary
 		    internal IntPtr Reserved;
 	    }
 
-        [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Auto)]
+        [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)]
         internal struct SP_DEVICE_INTERFACE_DETAIL_DATA
         {
             internal int Size;
@@ -142,10 +142,10 @@ namespace HidLibrary
 	    [DllImport("setupapi.dll", CharSet = CharSet.Unicode)]
         static internal extern IntPtr SetupDiGetClassDevs(ref System.Guid classGuid, string enumerator, IntPtr hwndParent, int flags);
 
-        [DllImport("setupapi.dll", CharSet = CharSet.Auto, EntryPoint = "SetupDiGetDeviceInterfaceDetail")]
+        [DllImport("setupapi.dll", CharSet = CharSet.Unicode, EntryPoint = "SetupDiGetDeviceInterfaceDetail")]
         static internal extern bool SetupDiGetDeviceInterfaceDetailBuffer(IntPtr deviceInfoSet, ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData, IntPtr deviceInterfaceDetailData, int deviceInterfaceDetailDataSize, ref int requiredSize, IntPtr deviceInfoData);
 
-	    [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
+	    [DllImport("setupapi.dll", CharSet = CharSet.Unicode)]
 	    static internal extern bool SetupDiGetDeviceInterfaceDetail(IntPtr deviceInfoSet, ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData, ref SP_DEVICE_INTERFACE_DETAIL_DATA deviceInterfaceDetailData, int deviceInterfaceDetailDataSize, ref int requiredSize, IntPtr deviceInfoData);
 
 	    [StructLayout(LayoutKind.Sequential)]
