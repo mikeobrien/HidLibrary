@@ -5,7 +5,8 @@
 
     <Version>3.2.49</Version>
     <Company>Ultraviolet Catastrophe</Company>
-    <Copyright>Copyright © 2011 Ultraviolet Catastrophe</Copyright>
+    <Copyright>Copyright © 2011-2020 Ultraviolet Catastrophe</Copyright>
+
     <PackageId>hidlibrary</PackageId>
     <Title>Hid Library</Title>
     <Authors>Mike O'Brien</Authors>
