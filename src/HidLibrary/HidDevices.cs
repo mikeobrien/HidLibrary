@@ -71,7 +71,7 @@ namespace HidLibrary
                     {
                         deviceInterfaceIndex++;
                         var devicePath = GetDevicePath(deviceInfoSet, deviceInterfaceData);
-                        var description = GetBusReportedDeviceDescription(deviceInfoSet, ref deviceInfoData) ?? 
+                        var description = GetBusReportedDeviceDescription(deviceInfoSet, ref deviceInfoData) ??
                                           GetDeviceDescription(deviceInfoSet, ref deviceInfoData);
                         devices.Add(new DeviceInfo { Path = devicePath, Description = description });
                     }

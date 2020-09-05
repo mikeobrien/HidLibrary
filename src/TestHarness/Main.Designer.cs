@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.Devices = new System.Windows.Forms.ListBox();
-            this.Refresh = new System.Windows.Forms.Button();
+            this.RefreshButton = new System.Windows.Forms.Button();
             this.Scan = new System.Windows.Forms.Button();
             this.Read = new System.Windows.Forms.Button();
             this.SuccessBeep = new System.Windows.Forms.Button();
@@ -39,8 +39,8 @@
             // 
             // Devices
             // 
-            this.Devices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.Devices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.Devices.FormattingEnabled = true;
             this.Devices.Location = new System.Drawing.Point(0, 12);
             this.Devices.Name = "Devices";
@@ -49,15 +49,15 @@
             this.Devices.SelectedIndexChanged += new System.EventHandler(this.Devices_SelectedIndexChanged);
             this.Devices.DoubleClick += new System.EventHandler(this.Devices_DoubleClick);
             // 
-            // Refresh
+            // RefreshButton
             // 
-            this.Refresh.Location = new System.Drawing.Point(350, 164);
-            this.Refresh.Name = "Refresh";
-            this.Refresh.Size = new System.Drawing.Size(75, 23);
-            this.Refresh.TabIndex = 1;
-            this.Refresh.Text = "Refresh";
-            this.Refresh.UseVisualStyleBackColor = true;
-            this.Refresh.Click += new System.EventHandler(this.Refresh_Click);
+            this.RefreshButton.Location = new System.Drawing.Point(350, 164);
+            this.RefreshButton.Name = "RefreshButton";
+            this.RefreshButton.Size = new System.Drawing.Size(75, 23);
+            this.RefreshButton.TabIndex = 1;
+            this.RefreshButton.Text = "Refresh";
+            this.RefreshButton.UseVisualStyleBackColor = true;
+            this.RefreshButton.Click += new System.EventHandler(this.Refresh_Click);
             // 
             // Scan
             // 
@@ -102,9 +102,9 @@
             // 
             // Output
             // 
-            this.Output.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.Output.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.Output.Location = new System.Drawing.Point(0, 193);
             this.Output.Multiline = true;
             this.Output.Name = "Output";
@@ -121,7 +121,7 @@
             this.Controls.Add(this.SuccessBeep);
             this.Controls.Add(this.Read);
             this.Controls.Add(this.Scan);
-            this.Controls.Add(this.Refresh);
+            this.Controls.Add(this.RefreshButton);
             this.Controls.Add(this.Devices);
             this.Name = "Main";
             this.Text = "Hid Test Harness";
@@ -134,7 +134,7 @@
         #endregion
 
         private System.Windows.Forms.ListBox Devices;
-        private System.Windows.Forms.Button Refresh;
+        private System.Windows.Forms.Button RefreshButton;
         private System.Windows.Forms.Button Scan;
         private System.Windows.Forms.Button Read;
         private System.Windows.Forms.Button SuccessBeep;
