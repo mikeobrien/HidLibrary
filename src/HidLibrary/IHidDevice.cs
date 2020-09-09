@@ -43,7 +43,7 @@ namespace HidLibrary
         void OpenDevice();
 
         void OpenDevice(DeviceMode readMode, DeviceMode writeMode, ShareMode shareMode);
-        
+
         void CloseDevice();
 
         HidDeviceData Read();
