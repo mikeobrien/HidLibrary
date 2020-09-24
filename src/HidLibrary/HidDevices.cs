@@ -98,7 +98,7 @@ namespace HidLibrary
             var bufferSize = 0;
             var interfaceDetail = new NativeMethods.SP_DEVICE_INTERFACE_DETAIL_DATA { Size = IntPtr.Size == 4 ? 4 + Marshal.SystemDefaultCharSize : 8 };
 
-            NativeMethods.SetupDiGetDeviceInterfaceDetailBuffer(deviceInfoSet, ref deviceInterfaceData, IntPtr.Zero, 0, ref bufferSize, IntPtr.Zero);
+            NativeMethods.SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref deviceInterfaceData, IntPtr.Zero, 0, ref bufferSize, IntPtr.Zero);
 
             return NativeMethods.SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref deviceInterfaceData, ref interfaceDetail, bufferSize, ref bufferSize, IntPtr.Zero) ? 
                 interfaceDetail.DevicePath : null;
@@ -115,43 +115,56 @@ namespace HidLibrary
 
         private static string GetDeviceDescription(IntPtr deviceInfoSet, ref NativeMethods.SP_DEVINFO_DATA devinfoData)
         {
-            var descriptionBuffer = new byte[1024];
+            unsafe
+            {
+                const int charCount = 1024;
+                var descriptionBuffer = stackalloc char[charCount];
 
-            var requiredSize = 0;
-            var type = 0;
+                var requiredSize = 0;
+                var type = 0;
 
-            NativeMethods.SetupDiGetDeviceRegistryProperty(deviceInfoSet,
-                                                            ref devinfoData,
-                                                            NativeMethods.SPDRP_DEVICEDESC,
-                                                            ref type,
-                                                            descriptionBuffer,
-                                                            descriptionBuffer.Length,
-                                                            ref requiredSize);
+                if (NativeMethods.SetupDiGetDeviceRegistryProperty(deviceInfoSet,
+                    ref devinfoData,
+                    NativeMethods.SPDRP_DEVICEDESC,
+                    ref type,
+                    descriptionBuffer,
+                    propertyBufferSize: charCount * sizeof(char),
+                    ref requiredSize))
+                {
+                    return new string(descriptionBuffer);
+                }
 
-            return descriptionBuffer.ToUTF8String();
+                return null;
+            }
         }
 
         private static string GetBusReportedDeviceDescription(IntPtr deviceInfoSet, ref NativeMethods.SP_DEVINFO_DATA devinfoData)
         {
-            var descriptionBuffer = new byte[1024];
-
-            if (Environment.OSVersion.Version.Major > 5)
+            unsafe
             {
-                uint propertyType = 0;
-                var requiredSize = 0;
+                const int charCount = 1024;
+                var descriptionBuffer = stackalloc char[charCount];
 
-                var _continue = NativeMethods.SetupDiGetDeviceProperty(deviceInfoSet,
-                                                                        ref devinfoData,
-                                                                        ref NativeMethods.DEVPKEY_Device_BusReportedDeviceDesc,
-                                                                        ref propertyType,
-                                                                        descriptionBuffer,
-                                                                        descriptionBuffer.Length,
-                                                                        ref requiredSize,
-                                                                        0);
+                if (Environment.OSVersion.Version.Major > 5)
+                {
+                    uint propertyType = 0;
+                    var requiredSize = 0;
 
-                if (_continue) return descriptionBuffer.ToUTF16String();
+                    if (NativeMethods.SetupDiGetDeviceProperty(deviceInfoSet,
+                        ref devinfoData,
+                        ref NativeMethods.DEVPKEY_Device_BusReportedDeviceDesc,
+                        ref propertyType,
+                        descriptionBuffer,
+                        propertyBufferSize: charCount * sizeof(char),
+                        ref requiredSize,
+                        0))
+                    {
+                        return new string(descriptionBuffer);
+                    }
+                }
+
+                return null;
             }
-            return null;
         }
     }
 }

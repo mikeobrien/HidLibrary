@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
+[module: DefaultCharSet(CharSet.Unicode)]
+
 namespace HidLibrary
 {
     internal static class NativeMethods
@@ -27,16 +29,16 @@ namespace HidLibrary
             public bool bInheritHandle;
         }
 
-        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Auto)]
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
         static internal extern bool CancelIoEx(IntPtr hFile, IntPtr lpOverlapped);
 
-        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Auto)]
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
         static internal extern bool CloseHandle(IntPtr hObject);
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        [DllImport("kernel32.dll")]
         static internal extern IntPtr CreateEvent(ref SECURITY_ATTRIBUTES securityAttributes, int bManualReset, int bInitialState, string lpName);
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        [DllImport("kernel32.dll", SetLastError = true)]
         static internal extern IntPtr CreateFile(string lpFileName, uint dwDesiredAccess, int dwShareMode, ref SECURITY_ATTRIBUTES lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, IntPtr hTemplateFile);
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -106,7 +108,7 @@ namespace HidLibrary
             internal IntPtr Reserved;
         }
 
-        [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Auto)]
+        [StructLayout(LayoutKind.Sequential)]
         internal struct SP_DEVICE_INTERFACE_DETAIL_DATA
         {
             internal int Size;
@@ -124,11 +126,11 @@ namespace HidLibrary
         internal static DEVPROPKEY DEVPKEY_Device_BusReportedDeviceDesc =
             new DEVPROPKEY { fmtid = new Guid(0x540b947e, 0x8b40, 0x45bc, 0xa8, 0xa2, 0x6a, 0x0b, 0x89, 0x4c, 0xbd, 0xa2), pid = 4 };
 
-        [DllImport("setupapi.dll", EntryPoint = "SetupDiGetDeviceRegistryProperty")]
-        public static extern bool SetupDiGetDeviceRegistryProperty(IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, int propertyVal, ref int propertyRegDataType, byte[] propertyBuffer, int propertyBufferSize, ref int requiredSize);
+        [DllImport("setupapi.dll")]
+        public static extern unsafe bool SetupDiGetDeviceRegistryProperty(IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, int propertyVal, ref int propertyRegDataType, void* propertyBuffer, int propertyBufferSize, ref int requiredSize);
 
-        [DllImport("setupapi.dll", EntryPoint = "SetupDiGetDevicePropertyW", SetLastError = true)]
-        public static extern bool SetupDiGetDeviceProperty(IntPtr deviceInfo, ref SP_DEVINFO_DATA deviceInfoData, ref DEVPROPKEY propkey, ref uint propertyDataType, byte[] propertyBuffer, int propertyBufferSize, ref int requiredSize, uint flags);
+        [DllImport("setupapi.dll", SetLastError = true)]
+        public static extern unsafe bool SetupDiGetDeviceProperty(IntPtr deviceInfo, ref SP_DEVINFO_DATA deviceInfoData, ref DEVPROPKEY propkey, ref uint propertyDataType, void* propertyBuffer, int propertyBufferSize, ref int requiredSize, uint flags);
 
         [DllImport("setupapi.dll")]
         static internal extern bool SetupDiEnumDeviceInfo(IntPtr deviceInfoSet, int memberIndex, ref SP_DEVINFO_DATA deviceInfoData);
@@ -139,13 +141,13 @@ namespace HidLibrary
         [DllImport("setupapi.dll")]
         static internal extern bool SetupDiEnumDeviceInterfaces(IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, ref Guid interfaceClassGuid, int memberIndex, ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData);
 
-        [DllImport("setupapi.dll", CharSet = CharSet.Unicode)]
+        [DllImport("setupapi.dll")]
         static internal extern IntPtr SetupDiGetClassDevs(ref System.Guid classGuid, string enumerator, IntPtr hwndParent, int flags);
 
-        [DllImport("setupapi.dll", CharSet = CharSet.Auto, EntryPoint = "SetupDiGetDeviceInterfaceDetail")]
-        static internal extern bool SetupDiGetDeviceInterfaceDetailBuffer(IntPtr deviceInfoSet, ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData, IntPtr deviceInterfaceDetailData, int deviceInterfaceDetailDataSize, ref int requiredSize, IntPtr deviceInfoData);
+        [DllImport("setupapi.dll")]
+        static internal extern bool SetupDiGetDeviceInterfaceDetail(IntPtr deviceInfoSet, ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData, IntPtr deviceInterfaceDetailData, int deviceInterfaceDetailDataSize, ref int requiredSize, IntPtr deviceInfoData);
 
-        [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
+        [DllImport("setupapi.dll")]
         static internal extern bool SetupDiGetDeviceInterfaceDetail(IntPtr deviceInfoSet, ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData, ref SP_DEVICE_INTERFACE_DETAIL_DATA deviceInterfaceDetailData, int deviceInterfaceDetailDataSize, ref int requiredSize, IntPtr deviceInfoData);
 
         [StructLayout(LayoutKind.Sequential)]
@@ -206,13 +208,13 @@ namespace HidLibrary
         [DllImport("hid.dll")]
         static internal extern int HidP_GetCaps(IntPtr preparsedData, ref HIDP_CAPS capabilities);
 
-        [DllImport("hid.dll", CharSet = CharSet.Unicode)]
+        [DllImport("hid.dll")]
         internal static extern bool HidD_GetProductString(IntPtr hidDeviceObject, ref byte lpReportBuffer, int ReportBufferLength);
 
-        [DllImport("hid.dll", CharSet = CharSet.Unicode)]
+        [DllImport("hid.dll")]
         internal static extern bool HidD_GetManufacturerString(IntPtr hidDeviceObject, ref byte lpReportBuffer, int ReportBufferLength);
 
-        [DllImport("hid.dll", CharSet = CharSet.Unicode)]
+        [DllImport("hid.dll")]
         internal static extern bool HidD_GetSerialNumberString(IntPtr hidDeviceObject, ref byte lpReportBuffer, int reportBufferLength);
     }
 }
