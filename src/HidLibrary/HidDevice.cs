@@ -263,7 +263,7 @@ namespace HidLibrary
                 else
                     hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
-                success = NativeMethods.HidD_GetProductString(hidHandle, ref data[0], data.Length);
+                success = NativeMethods.HidD_GetProductString(hidHandle, ref data, data.Length);
             }
             catch (Exception exception)
             {
@@ -290,7 +290,7 @@ namespace HidLibrary
                 else
                     hidHandle = OpenDeviceIO(_devicePath, NativeMethods.ACCESS_NONE);
 
-                success = NativeMethods.HidD_GetManufacturerString(hidHandle, ref data[0], data.Length);
+                success = NativeMethods.HidD_GetManufacturerString(hidHandle, ref data, data.Length);
             }
             catch (Exception exception)
             {
