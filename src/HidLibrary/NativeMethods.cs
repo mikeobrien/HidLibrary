@@ -209,12 +209,12 @@ namespace HidLibrary
         static internal extern int HidP_GetCaps(IntPtr preparsedData, ref HIDP_CAPS capabilities);
 
         [DllImport("hid.dll")]
-        internal static extern bool HidD_GetProductString(IntPtr hidDeviceObject, ref byte lpReportBuffer, int ReportBufferLength);
+        internal static extern bool HidD_GetProductString(IntPtr hidDeviceObject, byte[] lpReportBuffer, int ReportBufferLength);
 
         [DllImport("hid.dll")]
-        internal static extern bool HidD_GetManufacturerString(IntPtr hidDeviceObject, ref byte lpReportBuffer, int ReportBufferLength);
+        internal static extern bool HidD_GetManufacturerString(IntPtr hidDeviceObject, byte[] lpReportBuffer, int ReportBufferLength);
 
         [DllImport("hid.dll")]
-        internal static extern bool HidD_GetSerialNumberString(IntPtr hidDeviceObject, ref byte lpReportBuffer, int reportBufferLength);
+        internal static extern bool HidD_GetSerialNumberString(IntPtr hidDeviceObject, byte[] lpReportBuffer, int reportBufferLength);
     }
 }
