@@ -60,6 +60,11 @@ namespace HidLibrary
             return EnumerateDevices().Select(x => new HidDevice(x.Path, x.Description)).Where(x => (ushort)x.Capabilities.UsagePage == UsagePage);
         }
 
+        public static IEnumerable<HidDevice> Enumerate(ushort UsagePage, ushort Usage)
+        {
+            return EnumerateDevices().Select(x => new HidDevice(x.Path, x.Description)).Where(x => (ushort)x.Capabilities.UsagePage == UsagePage && x.Capabilities.Usage == Usage);
+        }
+
         internal class DeviceInfo { public string Path { get; set; } public string Description { get; set; } }
 
         internal static IEnumerable<DeviceInfo> EnumerateDevices()
