@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace HidLibrary
 {
@@ -21,8 +22,12 @@ namespace HidLibrary
 
         public void Init()
         {
-            var eventMonitor = new Action(DeviceEventMonitor);
-            eventMonitor.BeginInvoke(DisposeDeviceEventMonitor, eventMonitor);
+#if NET20 || NET35 || NET5_0_OR_GREATER
+            Task task = Task.Factory.StartNew(() => DeviceEventMonitor());
+#else
+             var eventMonitor = new Action(DeviceEventMonitor);
+             eventMonitor.BeginInvoke(DisposeDeviceEventMonitor, eventMonitor);
+#endif
         }
 
         private void DeviceEventMonitor()
