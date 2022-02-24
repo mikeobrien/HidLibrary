@@ -41,7 +41,15 @@ namespace HidLibrary
             return EnumerateDevices().Select(x => new HidDevice(x.Path, x.Description)).Where(x => x.Attributes.VendorId == vendorId &&
                                                                                   productId == (ushort)x.Attributes.ProductId && (ushort)x.Capabilities.UsagePage == UsagePage);
         }
-        
+
+        public static IEnumerable<HidDevice> Enumerate(int vendorId, int productId, ushort UsagePage, ushort Usage)
+        {
+            return EnumerateDevices().Select(x => new HidDevice(x.Path, x.Description)).Where(x => x.Attributes.VendorId == vendorId &&
+                                                                                  productId == (ushort)x.Attributes.ProductId &&
+                                                                                  (ushort)x.Capabilities.UsagePage == UsagePage &&
+                                                                                  (ushort)x.Capabilities.Usage == Usage);
+        }
+
         public static IEnumerable<HidDevice> Enumerate(int vendorId)
         {
             return EnumerateDevices().Select(x => new HidDevice(x.Path, x.Description)).Where(x => x.Attributes.VendorId == vendorId);
@@ -50,6 +58,11 @@ namespace HidLibrary
         public static IEnumerable<HidDevice> Enumerate(ushort UsagePage)
         {
             return EnumerateDevices().Select(x => new HidDevice(x.Path, x.Description)).Where(x => (ushort)x.Capabilities.UsagePage == UsagePage);
+        }
+
+        public static IEnumerable<HidDevice> Enumerate(ushort UsagePage, ushort Usage)
+        {
+            return EnumerateDevices().Select(x => new HidDevice(x.Path, x.Description)).Where(x => (ushort)x.Capabilities.UsagePage == UsagePage && x.Capabilities.Usage == Usage);
         }
 
         internal class DeviceInfo { public string Path { get; set; } public string Description { get; set; } }
