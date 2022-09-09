@@ -24,8 +24,8 @@ namespace HidLibrary
         private bool _monitorDeviceEvents;
         protected delegate HidDeviceData ReadDelegate(int timeout);
         protected delegate HidReport ReadReportDelegate(int timeout);
-        private delegate bool WriteDelegate(byte[] data, int timeout);
-        private delegate bool WriteReportDelegate(HidReport report, int timeout);
+        protected delegate bool WriteDelegate(byte[] data, int timeout);
+        protected delegate bool WriteReportDelegate(HidReport report, int timeout);
 
         internal HidDevice(string devicePath, string description = null)
         {
@@ -485,7 +485,7 @@ namespace HidLibrary
             if ((callbackDelegate != null)) callbackDelegate.Invoke(report);
         }
 
-        private static void EndWrite(IAsyncResult ar)
+        protected static void EndWrite(IAsyncResult ar)
         {
             var hidAsyncState = (HidAsyncState)ar.AsyncState;
             var callerDelegate = (WriteDelegate)hidAsyncState.CallerDelegate;
@@ -495,7 +495,7 @@ namespace HidLibrary
             if ((callbackDelegate != null)) callbackDelegate.Invoke(result);
         }
 
-        private static void EndWriteReport(IAsyncResult ar)
+        protected static void EndWriteReport(IAsyncResult ar)
         {
             var hidAsyncState = (HidAsyncState)ar.AsyncState;
             var callerDelegate = (WriteReportDelegate)hidAsyncState.CallerDelegate;
@@ -548,7 +548,7 @@ namespace HidLibrary
             return new HidDeviceCapabilities(capabilities);
         }
 
-        private bool WriteData(byte[] data, int timeout)
+        protected bool WriteData(byte[] data, int timeout)
         {
             if (_deviceCapabilities.OutputReportByteLength <= 0) return false;
 
